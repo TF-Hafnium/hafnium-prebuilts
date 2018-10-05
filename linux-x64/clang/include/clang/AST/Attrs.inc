@@ -1714,6 +1714,102 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::CFUnknownTransfer; }
 };
 
+class CPUDispatchAttr : public InheritableAttr {
+  unsigned cpus_Size;
+  IdentifierInfo * *cpus_;
+
+public:
+  static CPUDispatchAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) CPUDispatchAttr(Loc, Ctx, Cpus, CpusSize, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  CPUDispatchAttr(SourceRange R, ASTContext &Ctx
+              , IdentifierInfo * *Cpus, unsigned CpusSize
+              , unsigned SI
+             )
+    : InheritableAttr(attr::CPUDispatch, R, SI, false, false)
+              , cpus_Size(CpusSize), cpus_(new (Ctx, 16) IdentifierInfo *[cpus_Size])
+  {
+    std::copy(Cpus, Cpus + cpus_Size, cpus_);
+  }
+
+  CPUDispatchAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::CPUDispatch, R, SI, false, false)
+              , cpus_Size(0), cpus_(nullptr)
+  {
+  }
+
+  CPUDispatchAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  typedef IdentifierInfo ** cpus_iterator;
+  cpus_iterator cpus_begin() const { return cpus_; }
+  cpus_iterator cpus_end() const { return cpus_ + cpus_Size; }
+  unsigned cpus_size() const { return cpus_Size; }
+  llvm::iterator_range<cpus_iterator> cpus() const { return llvm::make_range(cpus_begin(), cpus_end()); }
+
+
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::CPUDispatch; }
+};
+
+class CPUSpecificAttr : public InheritableAttr {
+  unsigned cpus_Size;
+  IdentifierInfo * *cpus_;
+
+public:
+  static CPUSpecificAttr *CreateImplicit(ASTContext &Ctx, IdentifierInfo * *Cpus, unsigned CpusSize, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) CPUSpecificAttr(Loc, Ctx, Cpus, CpusSize, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  CPUSpecificAttr(SourceRange R, ASTContext &Ctx
+              , IdentifierInfo * *Cpus, unsigned CpusSize
+              , unsigned SI
+             )
+    : InheritableAttr(attr::CPUSpecific, R, SI, false, false)
+              , cpus_Size(CpusSize), cpus_(new (Ctx, 16) IdentifierInfo *[cpus_Size])
+  {
+    std::copy(Cpus, Cpus + cpus_Size, cpus_);
+  }
+
+  CPUSpecificAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::CPUSpecific, R, SI, false, false)
+              , cpus_Size(0), cpus_(nullptr)
+  {
+  }
+
+  CPUSpecificAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  typedef IdentifierInfo ** cpus_iterator;
+  cpus_iterator cpus_begin() const { return cpus_; }
+  cpus_iterator cpus_end() const { return cpus_ + cpus_Size; }
+  unsigned cpus_size() const { return cpus_Size; }
+  llvm::iterator_range<cpus_iterator> cpus() const { return llvm::make_range(cpus_begin(), cpus_end()); }
+
+
+
+    unsigned ActiveArgIndex = 0;
+
+    IdentifierInfo *getCurCPUName() const {
+      return *(cpus_begin() + ActiveArgIndex);
+    }
+  
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::CPUSpecific; }
+};
+
 class CUDAConstantAttr : public InheritableAttr {
 public:
   static CUDAConstantAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
@@ -2150,6 +2246,50 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::Cleanup; }
 };
 
+class CodeSegAttr : public InheritableAttr {
+unsigned nameLength;
+char *name;
+
+public:
+  static CodeSegAttr *CreateImplicit(ASTContext &Ctx, llvm::StringRef Name, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) CodeSegAttr(Loc, Ctx, Name, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  CodeSegAttr(SourceRange R, ASTContext &Ctx
+              , llvm::StringRef Name
+              , unsigned SI
+             )
+    : InheritableAttr(attr::CodeSeg, R, SI, false, false)
+              , nameLength(Name.size()),name(new (Ctx, 1) char[nameLength])
+  {
+      if (!Name.empty())
+        std::memcpy(name, Name.data(), nameLength);
+  }
+
+  CodeSegAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  llvm::StringRef getName() const {
+    return llvm::StringRef(name, nameLength);
+  }
+  unsigned getNameLength() const {
+    return nameLength;
+  }
+  void setName(ASTContext &C, llvm::StringRef S) {
+    nameLength = S.size();
+    this->name = new (C, 1) char [nameLength];
+    if (!S.empty())
+      std::memcpy(this->name, S.data(), nameLength);
+  }
+
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::CodeSeg; }
+};
+
 class ColdAttr : public InheritableAttr {
 public:
   static ColdAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
@@ -2440,6 +2580,13 @@ public:
                    const PrintingPolicy &Policy) const;
   const char *getSpelling() const;
 
+private:
+  bool PropagatedToBaseTemplate = false;
+
+public:
+  void setPropagatedToBaseTemplate() { PropagatedToBaseTemplate = true; }
+  bool wasPropagatedToBaseTemplate() { return PropagatedToBaseTemplate; }
+  
 
   static bool classof(const Attr *A) { return A->getKind() == attr::DLLImport; }
 };
@@ -3615,6 +3762,30 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::LayoutVersion; }
 };
 
+class LifetimeBoundAttr : public InheritableAttr {
+public:
+  static LifetimeBoundAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) LifetimeBoundAttr(Loc, Ctx, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  LifetimeBoundAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::LifetimeBound, R, SI, false, false)
+  {
+  }
+
+  LifetimeBoundAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::LifetimeBound; }
+};
+
 class LockReturnedAttr : public InheritableAttr {
 Expr * arg;
 
@@ -3701,6 +3872,8 @@ public:
     InterleaveCount,
     Unroll,
     UnrollCount,
+    UnrollAndJam,
+    UnrollAndJamCount,
     Distribute
   };
 private:
@@ -3723,7 +3896,9 @@ public:
   enum Spelling {
     Pragma_clang_loop = 0,
     Pragma_unroll = 1,
-    Pragma_nounroll = 2
+    Pragma_nounroll = 2,
+    Pragma_unroll_and_jam = 3,
+    Pragma_nounroll_and_jam = 4
   };
 
   static LoopHintAttr *CreateImplicit(ASTContext &Ctx, Spelling S, OptionType Option, LoopHintState State, Expr * Value, SourceRange Loc = SourceRange()) {
@@ -3755,6 +3930,8 @@ public:
     case 0: return Pragma_clang_loop;
     case 1: return Pragma_unroll;
     case 2: return Pragma_nounroll;
+    case 3: return Pragma_unroll_and_jam;
+    case 4: return Pragma_nounroll_and_jam;
   }
   }
   OptionType getOption() const {
@@ -3769,6 +3946,8 @@ public:
       .Case("interleave_count", LoopHintAttr::InterleaveCount)
       .Case("unroll", LoopHintAttr::Unroll)
       .Case("unroll_count", LoopHintAttr::UnrollCount)
+      .Case("unroll_and_jam", LoopHintAttr::UnrollAndJam)
+      .Case("unroll_and_jam_count", LoopHintAttr::UnrollAndJamCount)
       .Case("distribute", LoopHintAttr::Distribute)
       .Default(Optional<OptionType>());
     if (R) {
@@ -3786,6 +3965,8 @@ public:
     case LoopHintAttr::InterleaveCount: return "interleave_count";
     case LoopHintAttr::Unroll: return "unroll";
     case LoopHintAttr::UnrollCount: return "unroll_count";
+    case LoopHintAttr::UnrollAndJam: return "unroll_and_jam";
+    case LoopHintAttr::UnrollAndJamCount: return "unroll_and_jam_count";
     case LoopHintAttr::Distribute: return "distribute";
     }
     llvm_unreachable("No enumerator with that value");
@@ -3832,6 +4013,8 @@ public:
     case InterleaveCount: return "interleave_count";
     case Unroll: return "unroll";
     case UnrollCount: return "unroll_count";
+    case UnrollAndJam: return "unroll_and_jam";
+    case UnrollAndJamCount: return "unroll_and_jam_count";
     case Distribute: return "distribute";
     }
     llvm_unreachable("Unhandled LoopHint option.");
@@ -3841,9 +4024,9 @@ public:
     unsigned SpellingIndex = getSpellingListIndex();
     // For "#pragma unroll" and "#pragma nounroll" the string "unroll" or
     // "nounroll" is already emitted as the pragma name.
-    if (SpellingIndex == Pragma_nounroll)
+    if (SpellingIndex == Pragma_nounroll || SpellingIndex == Pragma_nounroll_and_jam)
       return;
-    else if (SpellingIndex == Pragma_unroll) {
+    else if (SpellingIndex == Pragma_unroll || SpellingIndex == Pragma_unroll_and_jam) {
       OS << ' ' << getValueString(Policy);
       return;
     }
@@ -3879,6 +4062,11 @@ public:
       return "#pragma nounroll";
     else if (SpellingIndex == Pragma_unroll)
       return "#pragma unroll" + (option == UnrollCount ? getValueString(Policy) : "");
+    else if (SpellingIndex == Pragma_nounroll_and_jam)
+      return "#pragma nounroll_and_jam";
+    else if (SpellingIndex == Pragma_unroll_and_jam)
+      return "#pragma unroll_and_jam" +
+        (option == UnrollAndJamCount ? getValueString(Policy) : "");
 
     assert(SpellingIndex == Pragma_clang_loop && "Unexpected spelling");
     return getOptionName(option) + getValueString(Policy);
@@ -3925,6 +4113,12 @@ public:
 
   static MSInheritanceAttr *CreateImplicit(ASTContext &Ctx, Spelling S, bool BestCase, SourceRange Loc = SourceRange()) {
     auto *A = new (Ctx) MSInheritanceAttr(Loc, Ctx, BestCase, S);
+    A->setImplicit(true);
+    return A;
+  }
+
+  static MSInheritanceAttr *CreateImplicit(ASTContext &Ctx, Spelling S, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) MSInheritanceAttr(Loc, Ctx, S);
     A->setImplicit(true);
     return A;
   }
@@ -4213,6 +4407,38 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::MinSize; }
+};
+
+class MinVectorWidthAttr : public InheritableAttr {
+unsigned vectorWidth;
+
+public:
+  static MinVectorWidthAttr *CreateImplicit(ASTContext &Ctx, unsigned VectorWidth, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) MinVectorWidthAttr(Loc, Ctx, VectorWidth, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  MinVectorWidthAttr(SourceRange R, ASTContext &Ctx
+              , unsigned VectorWidth
+              , unsigned SI
+             )
+    : InheritableAttr(attr::MinVectorWidth, R, SI, false, false)
+              , vectorWidth(VectorWidth)
+  {
+  }
+
+  MinVectorWidthAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  unsigned getVectorWidth() const {
+    return vectorWidth;
+  }
+
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::MinVectorWidth; }
 };
 
 class Mips16Attr : public InheritableAttr {
@@ -4899,6 +5125,30 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoSplitStack; }
+};
+
+class NoStackProtectorAttr : public InheritableAttr {
+public:
+  static NoStackProtectorAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) NoStackProtectorAttr(Loc, Ctx, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  NoStackProtectorAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::NoStackProtector, R, SI, false, false)
+  {
+  }
+
+  NoStackProtectorAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::NoStackProtector; }
 };
 
 class NoThreadSafetyAnalysisAttr : public InheritableAttr {
@@ -6755,6 +7005,74 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::Pure; }
 };
 
+class RISCVInterruptAttr : public InheritableAttr {
+public:
+  enum InterruptType {
+    user,
+    supervisor,
+    machine
+  };
+private:
+  InterruptType interrupt;
+
+public:
+  static RISCVInterruptAttr *CreateImplicit(ASTContext &Ctx, InterruptType Interrupt, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) RISCVInterruptAttr(Loc, Ctx, Interrupt, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  RISCVInterruptAttr(SourceRange R, ASTContext &Ctx
+              , InterruptType Interrupt
+              , unsigned SI
+             )
+    : InheritableAttr(attr::RISCVInterrupt, R, SI, false, false)
+              , interrupt(Interrupt)
+  {
+  }
+
+  RISCVInterruptAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::RISCVInterrupt, R, SI, false, false)
+              , interrupt(InterruptType(0))
+  {
+  }
+
+  RISCVInterruptAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+  InterruptType getInterrupt() const {
+    return interrupt;
+  }
+
+  static bool ConvertStrToInterruptType(StringRef Val, InterruptType &Out) {
+    Optional<InterruptType> R = llvm::StringSwitch<Optional<InterruptType>>(Val)
+      .Case("user", RISCVInterruptAttr::user)
+      .Case("supervisor", RISCVInterruptAttr::supervisor)
+      .Case("machine", RISCVInterruptAttr::machine)
+      .Default(Optional<InterruptType>());
+    if (R) {
+      Out = *R;
+      return true;
+    }
+    return false;
+  }
+
+  static const char *ConvertInterruptTypeToStr(InterruptType Val) {
+    switch(Val) {
+    case RISCVInterruptAttr::user: return "user";
+    case RISCVInterruptAttr::supervisor: return "supervisor";
+    case RISCVInterruptAttr::machine: return "machine";
+    }
+    llvm_unreachable("No enumerator with that value");
+  }
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::RISCVInterrupt; }
+};
+
 class RegCallAttr : public InheritableAttr {
 public:
   static RegCallAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
@@ -7764,7 +8082,7 @@ public:
         // overall feature validity for the function with the rest of the
         // attributes on the function.
         if (Feature.startswith("fpmath=") || Feature.startswith("tune="))
-	  continue;
+          continue;
 
         // While we're here iterating check for a different target cpu.
         if (Feature.startswith("arch=")) {

@@ -228,6 +228,18 @@
   case attr::CFUnknownTransfer: {
     break;
   }
+  case attr::CPUDispatch: {
+    const auto *SA = cast<CPUDispatchAttr>(A);
+    for (const auto &Val : SA->cpus())
+      OS << " " << Val;
+    break;
+  }
+  case attr::CPUSpecific: {
+    const auto *SA = cast<CPUSpecificAttr>(A);
+    for (const auto &Val : SA->cpus())
+      OS << " " << Val;
+    break;
+  }
   case attr::CUDAConstant: {
     break;
   }
@@ -288,6 +300,11 @@
     const auto *SA = cast<CleanupAttr>(A);
     OS << " ";
     dumpBareDeclRef(SA->getFunctionDecl());
+    break;
+  }
+  case attr::CodeSeg: {
+    const auto *SA = cast<CodeSegAttr>(A);
+    OS << " \"" << SA->getName() << "\"";
     break;
   }
   case attr::Cold: {
@@ -483,6 +500,9 @@
     OS << " " << SA->getVersion();
     break;
   }
+  case attr::LifetimeBound: {
+    break;
+  }
   case attr::LockReturned: {
     const auto *SA = cast<LockReturnedAttr>(A);
     dumpStmt(SA->getArg());
@@ -515,6 +535,12 @@
       break;
     case LoopHintAttr::UnrollCount:
       OS << " UnrollCount";
+      break;
+    case LoopHintAttr::UnrollAndJam:
+      OS << " UnrollAndJam";
+      break;
+    case LoopHintAttr::UnrollAndJamCount:
+      OS << " UnrollAndJamCount";
       break;
     case LoopHintAttr::Distribute:
       OS << " Distribute";
@@ -577,6 +603,11 @@
     break;
   }
   case attr::MinSize: {
+    break;
+  }
+  case attr::MinVectorWidth: {
+    const auto *SA = cast<MinVectorWidthAttr>(A);
+    OS << " " << SA->getVectorWidth();
     break;
   }
   case attr::Mips16: {
@@ -684,6 +715,9 @@
     break;
   }
   case attr::NoSplitStack: {
+    break;
+  }
+  case attr::NoStackProtector: {
     break;
   }
   case attr::NoThreadSafetyAnalysis: {
@@ -955,6 +989,21 @@
     break;
   }
   case attr::Pure: {
+    break;
+  }
+  case attr::RISCVInterrupt: {
+    const auto *SA = cast<RISCVInterruptAttr>(A);
+    switch(SA->getInterrupt()) {
+    case RISCVInterruptAttr::user:
+      OS << " user";
+      break;
+    case RISCVInterruptAttr::supervisor:
+      OS << " supervisor";
+      break;
+    case RISCVInterruptAttr::machine:
+      OS << " machine";
+      break;
+    }
     break;
   }
   case attr::RegCall: {

@@ -238,6 +238,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<CFUnknownTransferAttr>(At);
       return A->clone(C);
     }
+    case attr::CPUDispatch: {
+      const auto *A = cast<CPUDispatchAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CPUSpecific: {
+      const auto *A = cast<CPUSpecificAttr>(At);
+      return A->clone(C);
+    }
     case attr::CUDAConstant: {
       const auto *A = cast<CUDAConstantAttr>(At);
       return A->clone(C);
@@ -288,6 +296,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::Cleanup: {
       const auto *A = cast<CleanupAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CodeSeg: {
+      const auto *A = cast<CodeSegAttr>(At);
       return A->clone(C);
     }
     case attr::Cold: {
@@ -485,6 +497,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<LayoutVersionAttr>(At);
       return A->clone(C);
     }
+    case attr::LifetimeBound: {
+      const auto *A = cast<LifetimeBoundAttr>(At);
+      return A->clone(C);
+    }
     case attr::LockReturned: {
       const auto *A = cast<LockReturnedAttr>(At);
       Expr * tempInstArg;
@@ -552,6 +568,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::MinSize: {
       const auto *A = cast<MinSizeAttr>(At);
+      return A->clone(C);
+    }
+    case attr::MinVectorWidth: {
+      const auto *A = cast<MinVectorWidthAttr>(At);
       return A->clone(C);
     }
     case attr::Mips16: {
@@ -644,6 +664,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::NoSplitStack: {
       const auto *A = cast<NoSplitStackAttr>(At);
+      return A->clone(C);
+    }
+    case attr::NoStackProtector: {
+      const auto *A = cast<NoStackProtectorAttr>(At);
       return A->clone(C);
     }
     case attr::NoThreadSafetyAnalysis: {
@@ -850,6 +874,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::Pure: {
       const auto *A = cast<PureAttr>(At);
+      return A->clone(C);
+    }
+    case attr::RISCVInterrupt: {
+      const auto *A = cast<RISCVInterruptAttr>(At);
       return A->clone(C);
     }
     case attr::RegCall: {
@@ -1236,6 +1264,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::CFUnknownTransfer: {
       return nullptr;
     }
+    case attr::CPUDispatch: {
+      return nullptr;
+    }
+    case attr::CPUSpecific: {
+      return nullptr;
+    }
     case attr::CUDAConstant: {
       return nullptr;
     }
@@ -1273,6 +1307,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::Cleanup: {
+      return nullptr;
+    }
+    case attr::CodeSeg: {
       return nullptr;
     }
     case attr::Cold: {
@@ -1396,6 +1433,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::LayoutVersion: {
       return nullptr;
     }
+    case attr::LifetimeBound: {
+      return nullptr;
+    }
     case attr::LockReturned: {
       return nullptr;
     }
@@ -1433,6 +1473,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::MinSize: {
+      return nullptr;
+    }
+    case attr::MinVectorWidth: {
       return nullptr;
     }
     case attr::Mips16: {
@@ -1502,6 +1545,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::NoSplitStack: {
+      return nullptr;
+    }
+    case attr::NoStackProtector: {
       return nullptr;
     }
     case attr::NoThreadSafetyAnalysis: {
@@ -1652,6 +1698,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::Pure: {
+      return nullptr;
+    }
+    case attr::RISCVInterrupt: {
       return nullptr;
     }
     case attr::RegCall: {

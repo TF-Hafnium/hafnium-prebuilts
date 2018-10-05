@@ -299,6 +299,24 @@
         return 2;
     break;
   }
+  case AT_CPUDispatch: {
+    if (Name == "cpu_dispatch" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "cpu_dispatch" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "cpu_dispatch" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
+  case AT_CPUSpecific: {
+    if (Name == "cpu_specific" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "cpu_specific" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "cpu_specific" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
   case AT_CUDAConstant: {
     if (Name == "constant" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -379,6 +397,11 @@
         return 0;
     if (Name == "cleanup" && SyntaxUsed == 1 && Scope == "gnu")
         return 1;
+    break;
+  }
+  case AT_CodeSeg: {
+    if (Name == "code_seg" && SyntaxUsed == 3 && Scope == "")
+        return 0;
     break;
   }
   case AT_Cold: {
@@ -680,6 +703,13 @@
         return 0;
     break;
   }
+  case AT_LifetimeBound: {
+    if (Name == "lifetimebound" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "lifetimebound" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    break;
+  }
   case AT_LockReturned: {
     if (Name == "lock_returned" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -702,6 +732,10 @@
         return 1;
     if (Name == "nounroll" && SyntaxUsed == 6 && Scope == "")
         return 2;
+    if (Name == "unroll_and_jam" && SyntaxUsed == 6 && Scope == "")
+        return 3;
+    if (Name == "nounroll_and_jam" && SyntaxUsed == 6 && Scope == "")
+        return 4;
     break;
   }
   case AT_MSABI: {
@@ -754,6 +788,15 @@
     if (Name == "minsize" && SyntaxUsed == 1 && Scope == "clang")
         return 1;
     if (Name == "minsize" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
+  case AT_MinVectorWidth: {
+    if (Name == "min_vector_width" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "min_vector_width" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "min_vector_width" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
     break;
   }
@@ -976,6 +1019,15 @@
         return 0;
     if (Name == "no_split_stack" && SyntaxUsed == 1 && Scope == "gnu")
         return 1;
+    break;
+  }
+  case AT_NoStackProtector: {
+    if (Name == "no_stack_protector" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "no_stack_protector" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "no_stack_protector" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
     break;
   }
   case AT_NoThreadSafetyAnalysis: {
