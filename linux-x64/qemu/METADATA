@@ -8,9 +8,9 @@ third_party {
   }
   url {
     type: ARCHIVE
-    value: "https://download.qemu.org/qemu-2.12.1.tar.xz"
+    value: "https://download.qemu.org/qemu-3.1.0-rc5.tar.xz"
   }
-  version: "2.12.1"
-  last_upgrade_date { year: 2018 month: 8 day: 9 }
+  version: "3.1.0-rc5"
+  last_upgrade_date { year: 2018 month: 12 day: 11 }
   license_type: RESTRICTED
 }
