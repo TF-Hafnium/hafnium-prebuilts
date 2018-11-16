@@ -89,6 +89,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       }
       return new (C) AcquiredBeforeAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
     }
+    case attr::AddressSpace: {
+      const auto *A = cast<AddressSpaceAttr>(At);
+      return A->clone(C);
+    }
     case attr::Alias: {
       const auto *A = cast<AliasAttr>(At);
       return A->clone(C);
@@ -112,6 +116,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     case attr::AllocSize: {
       const auto *A = cast<AllocSizeAttr>(At);
       return new (C) AllocSizeAttr(A->getLocation(), C, A->getElemSizeParam(), A->getNumElemsParam(), A->getSpellingListIndex());
+    }
+    case attr::AlwaysDestroy: {
+      const auto *A = cast<AlwaysDestroyAttr>(At);
+      return A->clone(C);
     }
     case attr::AlwaysInline: {
       const auto *A = cast<AlwaysInlineAttr>(At);
@@ -382,6 +390,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<EnumExtensibilityAttr>(At);
       return A->clone(C);
     }
+    case attr::ExcludeFromExplicitInstantiation: {
+      const auto *A = cast<ExcludeFromExplicitInstantiationAttr>(At);
+      return A->clone(C);
+    }
     case attr::ExclusiveTrylockFunction: {
       const auto *A = cast<ExclusiveTrylockFunctionAttr>(At);
       Expr * tempInstSuccessValue;
@@ -630,6 +642,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<NoDebugAttr>(At);
       return A->clone(C);
     }
+    case attr::NoDestroy: {
+      const auto *A = cast<NoDestroyAttr>(At);
+      return A->clone(C);
+    }
     case attr::NoDuplicate: {
       const auto *A = cast<NoDuplicateAttr>(At);
       return A->clone(C);
@@ -738,8 +754,20 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<ObjCExplicitProtocolImplAttr>(At);
       return A->clone(C);
     }
+    case attr::ObjCGC: {
+      const auto *A = cast<ObjCGCAttr>(At);
+      return A->clone(C);
+    }
     case attr::ObjCIndependentClass: {
       const auto *A = cast<ObjCIndependentClassAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ObjCInertUnsafeUnretained: {
+      const auto *A = cast<ObjCInertUnsafeUnretainedAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ObjCKindOf: {
+      const auto *A = cast<ObjCKindOfAttr>(At);
       return A->clone(C);
     }
     case attr::ObjCMethodFamily: {
@@ -748,6 +776,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::ObjCNSObject: {
       const auto *A = cast<ObjCNSObjectAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ObjCOwnership: {
+      const auto *A = cast<ObjCOwnershipAttr>(At);
       return A->clone(C);
     }
     case attr::ObjCPreciseLifetime: {
@@ -786,12 +818,32 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<OpenCLAccessAttr>(At);
       return A->clone(C);
     }
+    case attr::OpenCLConstantAddressSpace: {
+      const auto *A = cast<OpenCLConstantAddressSpaceAttr>(At);
+      return A->clone(C);
+    }
+    case attr::OpenCLGenericAddressSpace: {
+      const auto *A = cast<OpenCLGenericAddressSpaceAttr>(At);
+      return A->clone(C);
+    }
+    case attr::OpenCLGlobalAddressSpace: {
+      const auto *A = cast<OpenCLGlobalAddressSpaceAttr>(At);
+      return A->clone(C);
+    }
     case attr::OpenCLIntelReqdSubGroupSize: {
       const auto *A = cast<OpenCLIntelReqdSubGroupSizeAttr>(At);
       return A->clone(C);
     }
     case attr::OpenCLKernel: {
       const auto *A = cast<OpenCLKernelAttr>(At);
+      return A->clone(C);
+    }
+    case attr::OpenCLLocalAddressSpace: {
+      const auto *A = cast<OpenCLLocalAddressSpaceAttr>(At);
+      return A->clone(C);
+    }
+    case attr::OpenCLPrivateAddressSpace: {
+      const auto *A = cast<OpenCLPrivateAddressSpaceAttr>(At);
       return A->clone(C);
     }
     case attr::OpenCLUnrollHint: {
@@ -872,6 +924,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<PtGuardedVarAttr>(At);
       return A->clone(C);
     }
+    case attr::Ptr32: {
+      const auto *A = cast<Ptr32Attr>(At);
+      return A->clone(C);
+    }
+    case attr::Ptr64: {
+      const auto *A = cast<Ptr64Attr>(At);
+      return A->clone(C);
+    }
     case attr::Pure: {
       const auto *A = cast<PureAttr>(At);
       return A->clone(C);
@@ -882,6 +942,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::RegCall: {
       const auto *A = cast<RegCallAttr>(At);
+      return A->clone(C);
+    }
+    case attr::Reinitializes: {
+      const auto *A = cast<ReinitializesAttr>(At);
       return A->clone(C);
     }
     case attr::ReleaseCapability: {
@@ -940,6 +1004,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::ReturnsTwice: {
       const auto *A = cast<ReturnsTwiceAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SPtr: {
+      const auto *A = cast<SPtrAttr>(At);
       return A->clone(C);
     }
     case attr::ScopedLockable: {
@@ -1060,12 +1128,28 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       }
       return new (C) TryAcquireCapabilityAttr(A->getLocation(), C, tempInstSuccessValue, tempInstArgs, A->args_size(), A->getSpellingListIndex());
     }
+    case attr::TypeNonNull: {
+      const auto *A = cast<TypeNonNullAttr>(At);
+      return A->clone(C);
+    }
+    case attr::TypeNullUnspecified: {
+      const auto *A = cast<TypeNullUnspecifiedAttr>(At);
+      return A->clone(C);
+    }
+    case attr::TypeNullable: {
+      const auto *A = cast<TypeNullableAttr>(At);
+      return A->clone(C);
+    }
     case attr::TypeTagForDatatype: {
       const auto *A = cast<TypeTagForDatatypeAttr>(At);
       return A->clone(C);
     }
     case attr::TypeVisibility: {
       return nullptr;
+    }
+    case attr::UPtr: {
+      const auto *A = cast<UPtrAttr>(At);
+      return A->clone(C);
     }
     case attr::Unavailable: {
       const auto *A = cast<UnavailableAttr>(At);
@@ -1177,6 +1261,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::AcquiredBefore: {
       return nullptr;
     }
+    case attr::AddressSpace: {
+      return nullptr;
+    }
     case attr::Alias: {
       return nullptr;
     }
@@ -1193,6 +1280,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::AllocSize: {
+      return nullptr;
+    }
+    case attr::AlwaysDestroy: {
       return nullptr;
     }
     case attr::AlwaysInline: {
@@ -1364,6 +1454,10 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::EnumExtensibility: {
       return nullptr;
     }
+    case attr::ExcludeFromExplicitInstantiation: {
+      const auto *A = cast<ExcludeFromExplicitInstantiationAttr>(At);
+      return A->clone(C);
+    }
     case attr::ExclusiveTrylockFunction: {
       return nullptr;
     }
@@ -1520,6 +1614,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::NoDebug: {
       return nullptr;
     }
+    case attr::NoDestroy: {
+      return nullptr;
+    }
     case attr::NoDuplicate: {
       return nullptr;
     }
@@ -1601,13 +1698,25 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::ObjCExplicitProtocolImpl: {
       return nullptr;
     }
+    case attr::ObjCGC: {
+      return nullptr;
+    }
     case attr::ObjCIndependentClass: {
+      return nullptr;
+    }
+    case attr::ObjCInertUnsafeUnretained: {
+      return nullptr;
+    }
+    case attr::ObjCKindOf: {
       return nullptr;
     }
     case attr::ObjCMethodFamily: {
       return nullptr;
     }
     case attr::ObjCNSObject: {
+      return nullptr;
+    }
+    case attr::ObjCOwnership: {
       return nullptr;
     }
     case attr::ObjCPreciseLifetime: {
@@ -1637,10 +1746,25 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::OpenCLAccess: {
       return nullptr;
     }
+    case attr::OpenCLConstantAddressSpace: {
+      return nullptr;
+    }
+    case attr::OpenCLGenericAddressSpace: {
+      return nullptr;
+    }
+    case attr::OpenCLGlobalAddressSpace: {
+      return nullptr;
+    }
     case attr::OpenCLIntelReqdSubGroupSize: {
       return nullptr;
     }
     case attr::OpenCLKernel: {
+      return nullptr;
+    }
+    case attr::OpenCLLocalAddressSpace: {
+      return nullptr;
+    }
+    case attr::OpenCLPrivateAddressSpace: {
       return nullptr;
     }
     case attr::OpenCLUnrollHint: {
@@ -1697,6 +1821,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::PtGuardedVar: {
       return nullptr;
     }
+    case attr::Ptr32: {
+      return nullptr;
+    }
+    case attr::Ptr64: {
+      return nullptr;
+    }
     case attr::Pure: {
       return nullptr;
     }
@@ -1704,6 +1834,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::RegCall: {
+      return nullptr;
+    }
+    case attr::Reinitializes: {
       return nullptr;
     }
     case attr::ReleaseCapability: {
@@ -1731,6 +1864,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::ReturnsTwice: {
+      return nullptr;
+    }
+    case attr::SPtr: {
       return nullptr;
     }
     case attr::ScopedLockable: {
@@ -1796,10 +1932,22 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::TryAcquireCapability: {
       return nullptr;
     }
+    case attr::TypeNonNull: {
+      return nullptr;
+    }
+    case attr::TypeNullUnspecified: {
+      return nullptr;
+    }
+    case attr::TypeNullable: {
+      return nullptr;
+    }
     case attr::TypeTagForDatatype: {
       return nullptr;
     }
     case attr::TypeVisibility: {
+      return nullptr;
+    }
+    case attr::UPtr: {
       return nullptr;
     }
     case attr::Unavailable: {

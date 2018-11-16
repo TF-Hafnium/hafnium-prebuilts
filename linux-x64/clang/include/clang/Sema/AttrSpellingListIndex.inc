@@ -129,6 +129,13 @@
         return 1;
     break;
   }
+  case AT_AlwaysDestroy: {
+    if (Name == "always_destroy" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "always_destroy" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    break;
+  }
   case AT_AlwaysInline: {
     if (Name == "always_inline" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -537,6 +544,15 @@
         return 2;
     break;
   }
+  case AT_ExcludeFromExplicitInstantiation: {
+    if (Name == "exclude_from_explicit_instantiation" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "exclude_from_explicit_instantiation" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "exclude_from_explicit_instantiation" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
   case AT_ExclusiveTrylockFunction: {
     if (Name == "exclusive_trylock_function" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -927,6 +943,13 @@
         return 1;
     break;
   }
+  case AT_NoDestroy: {
+    if (Name == "no_destroy" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "no_destroy" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    break;
+  }
   case AT_NoDuplicate: {
     if (Name == "noduplicate" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -1143,6 +1166,11 @@
         return 1;
     if (Name == "objc_independent_class" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
+    break;
+  }
+  case AT_ObjCInertUnsafeUnretained: {
+    if (Name == "__unsafe_unretained" && SyntaxUsed == 5 && Scope == "")
+        return 0;
     break;
   }
   case AT_ObjCKindOf: {
@@ -1475,6 +1503,13 @@
     if (Name == "regparm" && SyntaxUsed == 0 && Scope == "")
         return 0;
     if (Name == "regparm" && SyntaxUsed == 1 && Scope == "gnu")
+        return 1;
+    break;
+  }
+  case AT_Reinitializes: {
+    if (Name == "reinitializes" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "reinitializes" && SyntaxUsed == 1 && Scope == "clang")
         return 1;
     break;
   }

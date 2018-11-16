@@ -84,6 +84,11 @@
       dumpStmt(*I);
     break;
   }
+  case attr::AddressSpace: {
+    const auto *SA = cast<AddressSpaceAttr>(A);
+    OS << " " << SA->getAddressSpace();
+    break;
+  }
   case attr::Alias: {
     const auto *SA = cast<AliasAttr>(A);
     OS << " \"" << SA->getAliasee() << "\"";
@@ -116,6 +121,9 @@
     OS << " " << SA->getElemSizeParam().getSourceIndex();
     if (SA->getNumElemsParam().isValid())
       OS << " " << SA->getNumElemsParam().getSourceIndex();
+    break;
+  }
+  case attr::AlwaysDestroy: {
     break;
   }
   case attr::AlwaysInline: {
@@ -403,6 +411,9 @@
     }
     break;
   }
+  case attr::ExcludeFromExplicitInstantiation: {
+    break;
+  }
   case attr::ExclusiveTrylockFunction: {
     const auto *SA = cast<ExclusiveTrylockFunctionAttr>(A);
     dumpStmt(SA->getSuccessValue());
@@ -687,6 +698,9 @@
   case attr::NoDebug: {
     break;
   }
+  case attr::NoDestroy: {
+    break;
+  }
   case attr::NoDuplicate: {
     break;
   }
@@ -825,7 +839,19 @@
   case attr::ObjCExplicitProtocolImpl: {
     break;
   }
+  case attr::ObjCGC: {
+    const auto *SA = cast<ObjCGCAttr>(A);
+    if (SA->getKind())
+      OS << " " << SA->getKind()->getName();
+    break;
+  }
   case attr::ObjCIndependentClass: {
+    break;
+  }
+  case attr::ObjCInertUnsafeUnretained: {
+    break;
+  }
+  case attr::ObjCKindOf: {
     break;
   }
   case attr::ObjCMethodFamily: {
@@ -853,6 +879,12 @@
     break;
   }
   case attr::ObjCNSObject: {
+    break;
+  }
+  case attr::ObjCOwnership: {
+    const auto *SA = cast<ObjCOwnershipAttr>(A);
+    if (SA->getKind())
+      OS << " " << SA->getKind()->getName();
     break;
   }
   case attr::ObjCPreciseLifetime: {
@@ -885,12 +917,27 @@
     OS << " " << A->getSpelling();
     break;
   }
+  case attr::OpenCLConstantAddressSpace: {
+    break;
+  }
+  case attr::OpenCLGenericAddressSpace: {
+    break;
+  }
+  case attr::OpenCLGlobalAddressSpace: {
+    break;
+  }
   case attr::OpenCLIntelReqdSubGroupSize: {
     const auto *SA = cast<OpenCLIntelReqdSubGroupSizeAttr>(A);
     OS << " " << SA->getSubGroupSize();
     break;
   }
   case attr::OpenCLKernel: {
+    break;
+  }
+  case attr::OpenCLLocalAddressSpace: {
+    break;
+  }
+  case attr::OpenCLPrivateAddressSpace: {
     break;
   }
   case attr::OpenCLUnrollHint: {
@@ -988,6 +1035,12 @@
   case attr::PtGuardedVar: {
     break;
   }
+  case attr::Ptr32: {
+    break;
+  }
+  case attr::Ptr64: {
+    break;
+  }
   case attr::Pure: {
     break;
   }
@@ -1007,6 +1060,9 @@
     break;
   }
   case attr::RegCall: {
+    break;
+  }
+  case attr::Reinitializes: {
     break;
   }
   case attr::ReleaseCapability: {
@@ -1059,6 +1115,9 @@
     break;
   }
   case attr::ReturnsTwice: {
+    break;
+  }
+  case attr::SPtr: {
     break;
   }
   case attr::ScopedLockable: {
@@ -1167,6 +1226,15 @@
       dumpStmt(*I);
     break;
   }
+  case attr::TypeNonNull: {
+    break;
+  }
+  case attr::TypeNullUnspecified: {
+    break;
+  }
+  case attr::TypeNullable: {
+    break;
+  }
   case attr::TypeTagForDatatype: {
     const auto *SA = cast<TypeTagForDatatypeAttr>(A);
     if (SA->getArgumentKind())
@@ -1189,6 +1257,9 @@
       OS << " Protected";
       break;
     }
+    break;
+  }
+  case attr::UPtr: {
     break;
   }
   case attr::Unavailable: {

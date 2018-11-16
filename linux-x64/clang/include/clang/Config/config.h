@@ -61,7 +61,7 @@
 #define CLANG_HAVE_RLIMITS 1
 
 /* The LLVM product name and version */
-#define BACKEND_PACKAGE_STRING "LLVM 8.0.1svn"
+#define BACKEND_PACKAGE_STRING "LLVM 8.0.4svn"
 
 /* Linker version detected at compile time. */
 /* #undef HOST_LINK_VERSION */

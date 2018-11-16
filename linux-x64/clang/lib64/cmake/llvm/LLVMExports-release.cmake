@@ -997,6 +997,15 @@ set_target_properties(llvm-cxxfilt PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS llvm-cxxfilt )
 list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-cxxfilt "${_IMPORT_PREFIX}/bin/llvm-cxxfilt" )
 
+# Import target "llvm-cxxmap" for configuration "Release"
+set_property(TARGET llvm-cxxmap APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(llvm-cxxmap PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/bin/llvm-cxxmap"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS llvm-cxxmap )
+list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-cxxmap "${_IMPORT_PREFIX}/bin/llvm-cxxmap" )
+
 # Import target "llvm-diff" for configuration "Release"
 set_property(TARGET llvm-diff APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(llvm-diff PROPERTIES
