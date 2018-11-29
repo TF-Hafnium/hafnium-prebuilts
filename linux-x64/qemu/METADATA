@@ -1,0 +1,16 @@
+name: "QEMU"
+description: "A C language family frontend for LLVM."
+
+third_party {
+  url {
+    type: HOMEPAGE
+    value: "https://www.qemu.org/"
+  }
+  url {
+    type: ARCHIVE
+    value: "https://download.qemu.org/qemu-2.12.1.tar.xz"
+  }
+  version: "2.12.1"
+  last_upgrade_date { year: 2018 month: 8 day: 9 }
+  license_type: RESTRICTED
+}
