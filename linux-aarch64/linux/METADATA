@@ -1,0 +1,12 @@
+name: "Linux kernel"
+description: "Prebuilt Linux kernel image, for running integration tests."
+
+third_party {
+  url {
+    type: ARCHIVE
+    value: "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/snapshot/linux-4.19.13.tar.gz"
+  }
+  version: "4.19.13"
+  last_upgrade_date { year: 2019 month: 1 day: 2 }
+  license_type: RESTRICTED
+}
