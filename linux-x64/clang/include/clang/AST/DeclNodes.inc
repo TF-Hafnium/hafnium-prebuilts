@@ -497,6 +497,12 @@ ENUMCONSTANT(EnumConstant, ValueDecl)
 INDIRECTFIELD(IndirectField, ValueDecl)
 #undef INDIRECTFIELD
 
+#ifndef OMPDECLAREMAPPER
+#  define OMPDECLAREMAPPER(Type, Base) VALUE(Type, Base)
+#endif
+OMPDECLAREMAPPER(OMPDeclareMapper, ValueDecl)
+#undef OMPDECLAREMAPPER
+
 #ifndef OMPDECLAREREDUCTION
 #  define OMPDECLAREREDUCTION(Type, Base) VALUE(Type, Base)
 #endif
@@ -588,6 +594,7 @@ DECL_CONTEXT(Export)
 DECL_CONTEXT(ExternCContext)
 DECL_CONTEXT(LinkageSpec)
 DECL_CONTEXT(Namespace)
+DECL_CONTEXT(OMPDeclareMapper)
 DECL_CONTEXT(OMPDeclareReduction)
 DECL_CONTEXT(ObjCMethod)
 DECL_CONTEXT(TranslationUnit)

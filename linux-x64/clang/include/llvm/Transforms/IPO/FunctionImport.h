@@ -1,9 +1,8 @@
 //===- llvm/Transforms/IPO/FunctionImport.h - ThinLTO importing -*- C++ -*-===//
 //
-//                      The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -56,10 +55,14 @@ public:
     // to find at least one summary for the GUID that is global or a local
     // in the referenced module for direct calls.
     LocalLinkageNotInModule,
-    // This corresponse to the NotEligibleToImport being set on the summary,
+    // This corresponds to the NotEligibleToImport being set on the summary,
     // which can happen in a few different cases (e.g. local that can't be
     // renamed or promoted because it is referenced on a llvm*.used variable).
-    NotEligible
+    NotEligible,
+    // This corresponds to NoInline being set on the function summary,
+    // which will happen if it is known that the inliner will not be able
+    // to inline the function (e.g. it is marked with a NoInline attribute).
+    NoInline
   };
 
   /// Information optionally tracked for candidates the importer decided
@@ -171,6 +174,14 @@ void computeDeadSymbols(
     ModuleSummaryIndex &Index,
     const DenseSet<GlobalValue::GUID> &GUIDPreservedSymbols,
     function_ref<PrevailingType(GlobalValue::GUID)> isPrevailing);
+
+/// Compute dead symbols and run constant propagation in combined index
+/// after that.
+void computeDeadSymbolsWithConstProp(
+    ModuleSummaryIndex &Index,
+    const DenseSet<GlobalValue::GUID> &GUIDPreservedSymbols,
+    function_ref<PrevailingType(GlobalValue::GUID)> isPrevailing,
+    bool ImportEnabled);
 
 /// Converts value \p GV to declaration, or replaces with a declaration if
 /// it is an alias. Returns true if converted, false if replaced.

@@ -1,9 +1,8 @@
 //===- CompileOnDemandLayer.h - Compile each function on demand -*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -62,7 +61,7 @@ namespace orc {
 
 class ExtractingIRMaterializationUnit;
 
-class CompileOnDemandLayer2 : public IRLayer {
+class CompileOnDemandLayer : public IRLayer {
   friend class PartitioningIRMaterializationUnit;
 
 public:
@@ -84,8 +83,8 @@ public:
   /// symbol in them is requested.
   static Optional<GlobalValueSet> compileWholeModule(GlobalValueSet Requested);
 
-  /// Construct a CompileOnDemandLayer2.
-  CompileOnDemandLayer2(ExecutionSession &ES, IRLayer &BaseLayer,
+  /// Construct a CompileOnDemandLayer.
+  CompileOnDemandLayer(ExecutionSession &ES, IRLayer &BaseLayer,
                         LazyCallThroughManager &LCTMgr,
                         IndirectStubsManagerBuilder BuildIndirectStubsManager);
 
@@ -94,8 +93,7 @@ public:
 
   /// Emits the given module. This should not be called by clients: it will be
   /// called by the JIT when a definition added via the add method is requested.
-  void emit(MaterializationResponsibility R, VModuleKey K,
-            ThreadSafeModule TSM) override;
+  void emit(MaterializationResponsibility R, ThreadSafeModule TSM) override;
 
 private:
   struct PerDylibResources {
@@ -142,7 +140,7 @@ private:
 template <typename BaseLayerT,
           typename CompileCallbackMgrT = JITCompileCallbackManager,
           typename IndirectStubsMgrT = IndirectStubsManager>
-class CompileOnDemandLayer {
+class LegacyCompileOnDemandLayer {
 private:
   template <typename MaterializerFtor>
   class LambdaMaterializer final : public ValueMaterializer {
@@ -266,13 +264,13 @@ public:
       std::function<void(VModuleKey K, std::shared_ptr<SymbolResolver> R)>;
 
   /// Construct a compile-on-demand layer instance.
-  CompileOnDemandLayer(ExecutionSession &ES, BaseLayerT &BaseLayer,
-                       SymbolResolverGetter GetSymbolResolver,
-                       SymbolResolverSetter SetSymbolResolver,
-                       PartitioningFtor Partition,
-                       CompileCallbackMgrT &CallbackMgr,
-                       IndirectStubsManagerBuilderT CreateIndirectStubsManager,
-                       bool CloneStubsIntoPartitions = true)
+  LegacyCompileOnDemandLayer(ExecutionSession &ES, BaseLayerT &BaseLayer,
+                             SymbolResolverGetter GetSymbolResolver,
+                             SymbolResolverSetter SetSymbolResolver,
+                             PartitioningFtor Partition,
+                             CompileCallbackMgrT &CallbackMgr,
+                             IndirectStubsManagerBuilderT CreateIndirectStubsManager,
+                             bool CloneStubsIntoPartitions = true)
       : ES(ES), BaseLayer(BaseLayer),
         GetSymbolResolver(std::move(GetSymbolResolver)),
         SetSymbolResolver(std::move(SetSymbolResolver)),
@@ -280,7 +278,7 @@ public:
         CreateIndirectStubsManager(std::move(CreateIndirectStubsManager)),
         CloneStubsIntoPartitions(CloneStubsIntoPartitions) {}
 
-  ~CompileOnDemandLayer() {
+  ~LegacyCompileOnDemandLayer() {
     // FIXME: Report error on log.
     while (!LogicalDylibs.empty())
       consumeError(removeModule(LogicalDylibs.begin()->first));

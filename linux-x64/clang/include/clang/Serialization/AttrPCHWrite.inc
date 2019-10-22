@@ -7,6 +7,13 @@
 \*===----------------------------------------------------------------------===*/
 
   switch (A->getKind()) {
+  case attr::AArch64VectorPcs: {
+    const auto *SA = cast<AArch64VectorPcsAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::AMDGPUFlatWorkGroupSize: {
     const auto *SA = cast<AMDGPUFlatWorkGroupSizeAttr>(A);
     Record.push_back(SA->isInherited());
@@ -294,6 +301,7 @@ Record.push_back(SA->getInterrupt());
     Record.AddString(SA->getMessage());
     Record.push_back(SA->getStrict());
     Record.AddString(SA->getReplacement());
+    Record.push_back(SA->getPriority());
     break;
   }
   case attr::Blocks: {
@@ -441,6 +449,16 @@ Record.push_back(SA->getType());
       Record.push_back((*i));
     break;
   }
+  case attr::Callback: {
+    const auto *SA = cast<CallbackAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    Record.push_back(SA->encoding_size());
+    for (auto &Val : SA->encoding())
+      Record.push_back(Val);
+    break;
+  }
   case attr::Capability: {
     const auto *SA = cast<CapabilityAttr>(A);
     Record.push_back(SA->isInherited());
@@ -544,8 +562,22 @@ Record.push_back(SA->getDefaultState());
     Record.push_back(A->getSpellingListIndex());
     break;
   }
+  case attr::DLLExportStaticLocal: {
+    const auto *SA = cast<DLLExportStaticLocalAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::DLLImport: {
     const auto *SA = cast<DLLImportAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::DLLImportStaticLocal: {
+    const auto *SA = cast<DLLImportStaticLocalAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->getSpellingListIndex());
@@ -688,6 +720,15 @@ Record.push_back(SA->getExtensibility());
     Record.push_back(A->isImplicit());
     Record.push_back(A->getSpellingListIndex());
     Record.push_back(SA->getFormatIdx().serialize());
+    break;
+  }
+  case attr::FortifyStdLib: {
+    const auto *SA = cast<FortifyStdLibAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    Record.push_back(SA->getType());
+    Record.push_back(SA->getFlag());
     break;
   }
   case attr::GNUInline: {
@@ -1007,6 +1048,11 @@ Record.push_back(SA->getInterrupt());
     Record.push_back(A->getSpellingListIndex());
     break;
   }
+  case attr::NoDeref: {
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::NoDestroy: {
     const auto *SA = cast<NoDestroyAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1069,6 +1115,13 @@ Record.push_back(SA->getInterrupt());
     Record.push_back(SA->sanitizers_size());
     for (auto &Val : SA->sanitizers())
       Record.AddString(Val);
+    break;
+  }
+  case attr::NoSpeculativeLoadHardening: {
+    const auto *SA = cast<NoSpeculativeLoadHardeningAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
     break;
   }
   case attr::NoSplitStack: {
@@ -1178,6 +1231,48 @@ Record.push_back(SA->getMapType());
     Record.push_back(A->getSpellingListIndex());
     break;
   }
+  case attr::OSConsumed: {
+    const auto *SA = cast<OSConsumedAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::OSConsumesThis: {
+    const auto *SA = cast<OSConsumesThisAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::OSReturnsNotRetained: {
+    const auto *SA = cast<OSReturnsNotRetainedAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::OSReturnsRetained: {
+    const auto *SA = cast<OSReturnsRetainedAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::OSReturnsRetainedOnNonZero: {
+    const auto *SA = cast<OSReturnsRetainedOnNonZeroAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::OSReturnsRetainedOnZero: {
+    const auto *SA = cast<OSReturnsRetainedOnZeroAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::ObjCBoxable: {
     Record.push_back(A->isImplicit());
     Record.push_back(A->getSpellingListIndex());
@@ -1228,6 +1323,13 @@ Record.push_back(SA->getMapType());
     Record.push_back(A->getSpellingListIndex());
     break;
   }
+  case attr::ObjCExternallyRetained: {
+    const auto *SA = cast<ObjCExternallyRetainedAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::ObjCGC: {
     const auto *SA = cast<ObjCGCAttr>(A);
     Record.push_back(A->isImplicit());
@@ -1263,6 +1365,11 @@ Record.push_back(SA->getFamily());
   case attr::ObjCNSObject: {
     const auto *SA = cast<ObjCNSObjectAttr>(A);
     Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::ObjCNonLazyClass: {
     Record.push_back(A->isImplicit());
     Record.push_back(A->getSpellingListIndex());
     break;
@@ -1676,6 +1783,13 @@ Record.push_back(SA->getNewState());
       Record.AddStmt(Val);
     break;
   }
+  case attr::SpeculativeLoadHardening: {
+    const auto *SA = cast<SpeculativeLoadHardeningAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::StdCall: {
     const auto *SA = cast<StdCallAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1836,6 +1950,13 @@ Record.push_back(SA->getVisibility());
 Record.push_back(SA->getImplicitReason());
     break;
   }
+  case attr::Uninitialized: {
+    const auto *SA = cast<UninitializedAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::Unused: {
     const auto *SA = cast<UnusedAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1922,6 +2043,22 @@ Record.push_back(SA->getVisibility());
     Record.push_back(A->isImplicit());
     Record.push_back(A->getSpellingListIndex());
     Record.AddString(SA->getAliasee());
+    break;
+  }
+  case attr::WebAssemblyImportModule: {
+    const auto *SA = cast<WebAssemblyImportModuleAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    Record.AddString(SA->getImportModule());
+    break;
+  }
+  case attr::WebAssemblyImportName: {
+    const auto *SA = cast<WebAssemblyImportNameAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    Record.AddString(SA->getImportName());
     break;
   }
   case attr::WorkGroupSizeHint: {

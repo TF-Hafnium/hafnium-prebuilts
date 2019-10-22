@@ -1,9 +1,8 @@
 //===- SampleProf.h - Sampling profiling format support ---------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -488,8 +487,6 @@ public:
   // If the format is SPF_Compact_Binary, the name is already a GUID and we
   // don't want to return the GUID of GUID.
   static uint64_t getGUID(StringRef Name) {
-    if (Format == SPF_Compact_Binary)
-      errs() << Name << '\n';
     return (Format == SPF_Compact_Binary) ? std::stoull(Name.data())
                                           : Function::getGUID(Name);
   }

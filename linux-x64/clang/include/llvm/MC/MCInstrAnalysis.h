@@ -1,9 +1,8 @@
 //===- llvm/MC/MCInstrAnalysis.h - InstrDesc target hooks -------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -134,6 +133,17 @@ public:
   virtual bool isDependencyBreaking(const MCInst &MI, APInt &Mask,
                                     unsigned CPUID) const {
     return isZeroIdiom(MI, Mask, CPUID);
+  }
+
+  /// Returns true if MI is a candidate for move elimination.
+  ///
+  /// Different subtargets may apply different constraints to optimizable
+  /// register moves. For example, on most X86 subtargets, a candidate for move
+  /// elimination cannot specify the same register for both source and
+  /// destination.
+  virtual bool isOptimizableRegisterMove(const MCInst &MI,
+                                         unsigned CPUID) const {
+    return false;
   }
 
   /// Given a branch instruction try to get the address the branch

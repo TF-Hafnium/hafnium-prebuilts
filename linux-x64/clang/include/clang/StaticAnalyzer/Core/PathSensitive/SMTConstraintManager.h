@@ -1,9 +1,8 @@
 //== SMTConstraintManager.h -------------------------------------*- C++ -*--==//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -18,17 +17,20 @@
 #include "clang/StaticAnalyzer/Core/PathSensitive/RangedConstraintManager.h"
 #include "clang/StaticAnalyzer/Core/PathSensitive/SMTConv.h"
 
+typedef llvm::ImmutableSet<
+    std::pair<clang::ento::SymbolRef, const clang::ento::SMTExpr *>>
+    ConstraintSMTType;
+REGISTER_TRAIT_WITH_PROGRAMSTATE(ConstraintSMT, ConstraintSMTType)
+
 namespace clang {
 namespace ento {
 
-template <typename ConstraintSMT, typename SMTExprTy>
 class SMTConstraintManager : public clang::ento::SimpleConstraintManager {
-  SMTSolverRef &Solver;
+  mutable SMTSolverRef Solver = CreateZ3Solver();
 
 public:
-  SMTConstraintManager(clang::ento::SubEngine *SE, clang::ento::SValBuilder &SB,
-                       SMTSolverRef &S)
-      : SimpleConstraintManager(SE, SB), Solver(S) {}
+  SMTConstraintManager(clang::ento::SubEngine *SE, clang::ento::SValBuilder &SB)
+      : SimpleConstraintManager(SE, SB) {}
   virtual ~SMTConstraintManager() = default;
 
   //===------------------------------------------------------------------===//
@@ -198,7 +200,7 @@ public:
     auto &CZFactory = State->get_context<ConstraintSMT>();
 
     for (auto I = CZ.begin(), E = CZ.end(); I != E; ++I) {
-      if (SymReaper.maybeDead(I->first))
+      if (SymReaper.isDead(I->first))
         CZ = CZFactory.remove(CZ, *I);
     }
 
@@ -213,9 +215,55 @@ public:
     OS << nl << sep << "Constraints:";
     for (auto I = CZ.begin(), E = CZ.end(); I != E; ++I) {
       OS << nl << ' ' << I->first << " : ";
-      I->second.print(OS);
+      I->second->print(OS);
     }
     OS << nl;
+  }
+
+  bool canReasonAbout(SVal X) const override {
+    const TargetInfo &TI = getBasicVals().getContext().getTargetInfo();
+
+    Optional<nonloc::SymbolVal> SymVal = X.getAs<nonloc::SymbolVal>();
+    if (!SymVal)
+      return true;
+
+    const SymExpr *Sym = SymVal->getSymbol();
+    QualType Ty = Sym->getType();
+
+    // Complex types are not modeled
+    if (Ty->isComplexType() || Ty->isComplexIntegerType())
+      return false;
+
+    // Non-IEEE 754 floating-point types are not modeled
+    if ((Ty->isSpecificBuiltinType(BuiltinType::LongDouble) &&
+         (&TI.getLongDoubleFormat() == &llvm::APFloat::x87DoubleExtended() ||
+          &TI.getLongDoubleFormat() == &llvm::APFloat::PPCDoubleDouble())))
+      return false;
+
+    if (Ty->isRealFloatingType())
+      return Solver->isFPSupported();
+
+    if (isa<SymbolData>(Sym))
+      return true;
+
+    SValBuilder &SVB = getSValBuilder();
+
+    if (const SymbolCast *SC = dyn_cast<SymbolCast>(Sym))
+      return canReasonAbout(SVB.makeSymbolVal(SC->getOperand()));
+
+    if (const BinarySymExpr *BSE = dyn_cast<BinarySymExpr>(Sym)) {
+      if (const SymIntExpr *SIE = dyn_cast<SymIntExpr>(BSE))
+        return canReasonAbout(SVB.makeSymbolVal(SIE->getLHS()));
+
+      if (const IntSymExpr *ISE = dyn_cast<IntSymExpr>(BSE))
+        return canReasonAbout(SVB.makeSymbolVal(ISE->getRHS()));
+
+      if (const SymSymExpr *SSE = dyn_cast<SymSymExpr>(BSE))
+        return canReasonAbout(SVB.makeSymbolVal(SSE->getLHS())) &&
+               canReasonAbout(SVB.makeSymbolVal(SSE->getRHS()));
+    }
+
+    llvm_unreachable("Unsupported expression to reason about!");
   }
 
   /// Dumps SMT formula
@@ -227,8 +275,7 @@ protected:
                                      const SMTExprRef &Exp) {
     // Check the model, avoid simplifying AST to save time
     if (checkModel(State, Sym, Exp).isConstrainedTrue())
-      return State->add<ConstraintSMT>(
-          std::make_pair(Sym, static_cast<const SMTExprTy &>(*Exp)));
+      return State->add<ConstraintSMT>(std::make_pair(Sym, Exp));
 
     return nullptr;
   }
@@ -244,9 +291,9 @@ protected:
     if (I != IE) {
       std::vector<SMTExprRef> ASTs;
 
-      SMTExprRef Constraint = Solver->newExprRef(I++->second);
+      SMTExprRef Constraint = I++->second;
       while (I != IE) {
-        Constraint = Solver->mkAnd(Constraint, Solver->newExprRef(I++->second));
+        Constraint = Solver->mkAnd(Constraint, I++->second);
       }
 
       Solver->addConstraint(Constraint);
@@ -256,8 +303,8 @@ protected:
   // Generate and check a Z3 model, using the given constraint.
   ConditionTruthVal checkModel(ProgramStateRef State, SymbolRef Sym,
                                const SMTExprRef &Exp) const {
-    ProgramStateRef NewState = State->add<ConstraintSMT>(
-        std::make_pair(Sym, static_cast<const SMTExprTy &>(*Exp)));
+    ProgramStateRef NewState =
+        State->add<ConstraintSMT>(std::make_pair(Sym, Exp));
 
     llvm::FoldingSetNodeID ID;
     NewState->get<ConstraintSMT>().Profile(ID);

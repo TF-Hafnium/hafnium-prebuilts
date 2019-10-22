@@ -6,7 +6,7 @@
 #define CLANG_CONFIG_H
 
 /* Bug report URL. */
-#define BUG_REPORT_URL "https://bugs.llvm.org/"
+#define BUG_REPORT_URL "https://github.com/android-ndk/ndk/issues"
 
 /* Default linker to use. */
 #define CLANG_DEFAULT_LINKER ""
@@ -61,7 +61,7 @@
 #define CLANG_HAVE_RLIMITS 1
 
 /* The LLVM product name and version */
-#define BACKEND_PACKAGE_STRING "LLVM 8.0.4svn"
+#define BACKEND_PACKAGE_STRING "LLVM 9.0.3svn"
 
 /* Linker version detected at compile time. */
 /* #undef HOST_LINK_VERSION */

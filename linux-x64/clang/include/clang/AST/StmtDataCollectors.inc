@@ -118,8 +118,8 @@ DEF_ADD_DATA(FloatingLiteral, {
 )
 DEF_ADD_DATA(GenericSelectionExpr, {
 
-    for (unsigned i = 0; i < S->getNumAssocs(); ++i) {
-      addData(S->getAssocType(i));
+    for (const GenericSelectionExpr::ConstAssociation &Assoc : S->associations()) {
+      addData(Assoc.getType());
     }
   }
 )
@@ -188,7 +188,7 @@ DEF_ADD_DATA(ObjCPropertyRefExpr, {
 )
 DEF_ADD_DATA(PredefinedExpr, {
 
-    addData(S->getIdentType());
+    addData(S->getIdentKind());
   }
 )
 DEF_ADD_DATA(Stmt, {

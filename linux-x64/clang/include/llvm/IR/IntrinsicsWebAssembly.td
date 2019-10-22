@@ -1,9 +1,8 @@
 //===- IntrinsicsWebAssembly.td - Defines wasm intrinsics --*- tablegen -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 ///
@@ -24,17 +23,16 @@ def int_wasm_memory_grow : Intrinsic<[llvm_anyint_ty],
                                      [llvm_i32_ty, LLVMMatchType<0>],
                                      []>;
 
-// These are the old names.
-def int_wasm_mem_size : Intrinsic<[llvm_anyint_ty],
-                                  [llvm_i32_ty],
-                                  [IntrReadMem]>;
-def int_wasm_mem_grow : Intrinsic<[llvm_anyint_ty],
-                                  [llvm_i32_ty, LLVMMatchType<0>],
-                                  []>;
+//===----------------------------------------------------------------------===//
+// Saturating float-to-int conversions
+//===----------------------------------------------------------------------===//
 
-// These are the old old names. They also lack the immediate field.
-def int_wasm_current_memory : Intrinsic<[llvm_anyint_ty], [], [IntrReadMem]>;
-def int_wasm_grow_memory : Intrinsic<[llvm_anyint_ty], [LLVMMatchType<0>], []>;
+def int_wasm_trunc_saturate_signed : Intrinsic<[llvm_anyint_ty],
+                                               [llvm_anyfloat_ty],
+                                               [IntrNoMem, IntrSpeculatable]>;
+def int_wasm_trunc_saturate_unsigned : Intrinsic<[llvm_anyint_ty],
+                                                 [llvm_anyfloat_ty],
+                                                 [IntrNoMem, IntrSpeculatable]>;
 
 //===----------------------------------------------------------------------===//
 // Exception handling intrinsics
@@ -51,16 +49,16 @@ def int_wasm_get_exception : Intrinsic<[llvm_ptr_ty], [llvm_token_ty],
                                        [IntrHasSideEffects]>;
 def int_wasm_get_ehselector : Intrinsic<[llvm_i32_ty], [llvm_token_ty],
                                         [IntrHasSideEffects]>;
-
-// wasm.catch returns the pointer to the exception object caught by wasm 'catch'
-// instruction.
-def int_wasm_catch : Intrinsic<[llvm_ptr_ty], [llvm_i32_ty],
-                               [IntrHasSideEffects]>;
+// This is the same as llvm.wasm.get.exception except that it does not take a
+// token operand. This is only for instruction selection purpose.
+def int_wasm_extract_exception : Intrinsic<[llvm_ptr_ty], [],
+                                           [IntrHasSideEffects]>;
 
 // WebAssembly EH must maintain the landingpads in the order assigned to them
 // by WasmEHPrepare pass to generate landingpad table in EHStreamer. This is
 // used in order to give them the indices in WasmEHPrepare.
-def int_wasm_landingpad_index: Intrinsic<[], [llvm_i32_ty], [IntrNoMem]>;
+def int_wasm_landingpad_index: Intrinsic<[], [llvm_token_ty, llvm_i32_ty],
+                                         [IntrNoMem]>;
 
 // Returns LSDA address of the current function.
 def int_wasm_lsda : Intrinsic<[llvm_ptr_ty], [], [IntrNoMem]>;
@@ -91,14 +89,6 @@ def int_wasm_atomic_notify:
 // SIMD intrinsics
 //===----------------------------------------------------------------------===//
 
-def int_wasm_add_saturate_signed :
-  Intrinsic<[llvm_anyvector_ty],
-            [LLVMMatchType<0>, LLVMMatchType<0>],
-            [IntrNoMem, IntrSpeculatable]>;
-def int_wasm_add_saturate_unsigned :
-  Intrinsic<[llvm_anyvector_ty],
-            [LLVMMatchType<0>, LLVMMatchType<0>],
-            [IntrNoMem, IntrSpeculatable]>;
 def int_wasm_sub_saturate_signed :
   Intrinsic<[llvm_anyvector_ty],
             [LLVMMatchType<0>, LLVMMatchType<0>],
@@ -119,5 +109,19 @@ def int_wasm_alltrue :
   Intrinsic<[llvm_i32_ty],
             [llvm_anyvector_ty],
             [IntrNoMem, IntrSpeculatable]>;
+
+//===----------------------------------------------------------------------===//
+// Bulk memory intrinsics
+//===----------------------------------------------------------------------===//
+
+def int_wasm_memory_init :
+  Intrinsic<[],
+            [llvm_i32_ty, llvm_i32_ty, llvm_ptr_ty, llvm_i32_ty, llvm_i32_ty],
+            [IntrWriteMem, IntrInaccessibleMemOrArgMemOnly, WriteOnly<2>,
+             IntrHasSideEffects]>;
+def int_wasm_data_drop :
+  Intrinsic<[],
+            [llvm_i32_ty],
+            [IntrNoDuplicate, IntrHasSideEffects]>;
 
 } // TargetPrefix = "wasm"

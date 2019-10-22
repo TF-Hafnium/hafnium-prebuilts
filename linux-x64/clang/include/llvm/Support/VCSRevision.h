@@ -1,1 +1,2 @@
-#define LLVM_REVISION "git-e6bbea3a709"
+#define LLVM_REVISION "60cf23e54e46c807513f7a36d0a7b777920b5881"
+#define LLVM_REPOSITORY "/buildbot/tmp/tmpCdFZ_W"

@@ -224,16 +224,6 @@ set_target_properties(LLVMVectorize PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMVectorize )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMVectorize "${_IMPORT_PREFIX}/lib64/libLLVMVectorize.a" )
 
-# Import target "LLVMHello" for configuration "Release"
-set_property(TARGET LLVMHello APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(LLVMHello PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/LLVMHello.so"
-  IMPORTED_NO_SONAME_RELEASE "TRUE"
-  )
-
-list(APPEND _IMPORT_CHECK_TARGETS LLVMHello )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMHello "${_IMPORT_PREFIX}/lib64/LLVMHello.so" )
-
 # Import target "LLVMObjCARCOpts" for configuration "Release"
 set_property(TARGET LLVMObjCARCOpts APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVMObjCARCOpts PROPERTIES
@@ -314,6 +304,16 @@ set_target_properties(LLVMMCDisassembler PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMMCDisassembler )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMMCDisassembler "${_IMPORT_PREFIX}/lib64/libLLVMMCDisassembler.a" )
 
+# Import target "LLVMMCA" for configuration "Release"
+set_property(TARGET LLVMMCA APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMMCA PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMMCA.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMMCA )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMMCA "${_IMPORT_PREFIX}/lib64/libLLVMMCA.a" )
+
 # Import target "LLVMObject" for configuration "Release"
 set_property(TARGET LLVMObject APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVMObject PROPERTIES
@@ -343,6 +343,16 @@ set_target_properties(LLVMOption PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVMOption )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMOption "${_IMPORT_PREFIX}/lib64/libLLVMOption.a" )
+
+# Import target "LLVMOptRemarks" for configuration "Release"
+set_property(TARGET LLVMOptRemarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMOptRemarks PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMOptRemarks.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMOptRemarks )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMOptRemarks "${_IMPORT_PREFIX}/lib64/libLLVMOptRemarks.a" )
 
 # Import target "LLVMDebugInfoDWARF" for configuration "Release"
 set_property(TARGET LLVMDebugInfoDWARF APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -774,6 +784,16 @@ set_target_properties(LLVMPasses PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMPasses )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMPasses "${_IMPORT_PREFIX}/lib64/libLLVMPasses.a" )
 
+# Import target "LLVMTextAPI" for configuration "Release"
+set_property(TARGET LLVMTextAPI APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMTextAPI PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMTextAPI.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMTextAPI )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMTextAPI "${_IMPORT_PREFIX}/lib64/libLLVMTextAPI.a" )
+
 # Import target "LLVMDlltoolDriver" for configuration "Release"
 set_property(TARGET LLVMDlltoolDriver APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVMDlltoolDriver PROPERTIES
@@ -817,12 +837,12 @@ list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMWindowsManifest "${_IMPORT_PREFIX}/lib64
 # Import target "LTO" for configuration "Release"
 set_property(TARGET LTO APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LTO PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLTO.so.8svn"
-  IMPORTED_SONAME_RELEASE "libLTO.so.8svn"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLTO.so.9svn"
+  IMPORTED_SONAME_RELEASE "libLTO.so.9svn"
   )
 
 list(APPEND _IMPORT_CHECK_TARGETS LTO )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LTO "${_IMPORT_PREFIX}/lib64/libLTO.so.8svn" )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LTO "${_IMPORT_PREFIX}/lib64/libLTO.so.9svn" )
 
 # Import target "LLVMgold" for configuration "Release"
 set_property(TARGET LLVMgold APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -878,16 +898,6 @@ set_target_properties(bugpoint PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS bugpoint )
 list(APPEND _IMPORT_CHECK_FILES_FOR_bugpoint "${_IMPORT_PREFIX}/bin/bugpoint" )
-
-# Import target "BugpointPasses" for configuration "Release"
-set_property(TARGET BugpointPasses APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(BugpointPasses PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/BugpointPasses.so"
-  IMPORTED_NO_SONAME_RELEASE "TRUE"
-  )
-
-list(APPEND _IMPORT_CHECK_TARGETS BugpointPasses )
-list(APPEND _IMPORT_CHECK_FILES_FOR_BugpointPasses "${_IMPORT_PREFIX}/lib64/BugpointPasses.so" )
 
 # Import target "dsymutil" for configuration "Release"
 set_property(TARGET dsymutil APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -1042,6 +1052,15 @@ set_target_properties(llvm-dwp PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS llvm-dwp )
 list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-dwp "${_IMPORT_PREFIX}/bin/llvm-dwp" )
 
+# Import target "llvm-elfabi" for configuration "Release"
+set_property(TARGET llvm-elfabi APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(llvm-elfabi PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/bin/llvm-elfabi"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS llvm-elfabi )
+list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-elfabi "${_IMPORT_PREFIX}/bin/llvm-elfabi" )
+
 # Import target "llvm-exegesis" for configuration "Release"
 set_property(TARGET llvm-exegesis APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(llvm-exegesis PROPERTIES
@@ -1189,12 +1208,12 @@ list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-rtdyld "${_IMPORT_PREFIX}/bin/llvm-rtdy
 # Import target "LLVM" for configuration "Release"
 set_property(TARGET LLVM APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVM PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVM-8svn.so"
-  IMPORTED_SONAME_RELEASE "libLLVM-8svn.so"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVM-9svn.so"
+  IMPORTED_SONAME_RELEASE "libLLVM-9svn.so"
   )
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVM )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LLVM "${_IMPORT_PREFIX}/lib64/libLLVM-8svn.so" )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVM "${_IMPORT_PREFIX}/lib64/libLLVM-9svn.so" )
 
 # Import target "llvm-size" for configuration "Release"
 set_property(TARGET llvm-size APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -1277,6 +1296,16 @@ set_target_properties(opt PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS opt )
 list(APPEND _IMPORT_CHECK_FILES_FOR_opt "${_IMPORT_PREFIX}/bin/opt" )
 
+# Import target "OptRemarks" for configuration "Release"
+set_property(TARGET OptRemarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(OptRemarks PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libOptRemarks.so.9svn"
+  IMPORTED_SONAME_RELEASE "libOptRemarks.so.9svn"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS OptRemarks )
+list(APPEND _IMPORT_CHECK_FILES_FOR_OptRemarks "${_IMPORT_PREFIX}/lib64/libOptRemarks.so.9svn" )
+
 # Import target "sancov" for configuration "Release"
 set_property(TARGET sancov APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(sancov PROPERTIES
@@ -1312,16 +1341,6 @@ set_target_properties(yaml2obj PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS yaml2obj )
 list(APPEND _IMPORT_CHECK_FILES_FOR_yaml2obj "${_IMPORT_PREFIX}/bin/yaml2obj" )
-
-# Import target "TestPlugin" for configuration "Release"
-set_property(TARGET TestPlugin APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(TestPlugin PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/TestPlugin.so"
-  IMPORTED_NO_SONAME_RELEASE "TRUE"
-  )
-
-list(APPEND _IMPORT_CHECK_TARGETS TestPlugin )
-list(APPEND _IMPORT_CHECK_FILES_FOR_TestPlugin "${_IMPORT_PREFIX}/lib64/TestPlugin.so" )
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)
