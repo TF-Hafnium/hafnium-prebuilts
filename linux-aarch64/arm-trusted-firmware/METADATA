@@ -10,7 +10,7 @@ third_party {
     type: GIT
     value: "https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git"
   }
-  version: "2.1-867-gcc76d670"
-  last_upgrade_date { year: 2019 month: 10 day: 30 }
+  version: "2.2-411-gb3a28c6ea"
+  last_upgrade_date { year: 2020 month: 1 day: 22 }
   license_type: NOTICE
 }
