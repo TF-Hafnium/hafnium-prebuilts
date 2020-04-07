@@ -829,7 +829,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_XRayLogArgs;	 // "xray_log_args"
     }
     break;
-  case 14:	 // 13 strings to match.
+  case 14:	 // 12 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 3 strings to match.
@@ -857,10 +857,6 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+1, "evice_builtin", 13) != 0)
         break;
       return ParsedAttr::IgnoredAttribute;	 // "device_builtin"
-    case 'f':	 // 1 string to match.
-      if (memcmp(Name.data()+1, "ortify_stdlib", 13) != 0)
-        break;
-      return ParsedAttr::AT_FortifyStdLib;	 // "fortify_stdlib"
     case 'i':	 // 1 string to match.
       if (memcmp(Name.data()+1, "ntel_ocl_bicc", 13) != 0)
         break;
@@ -898,7 +894,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_TestTypestate;	 // "test_typestate"
     }
     break;
-  case 15:	 // 13 strings to match.
+  case 15:	 // 14 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 3 strings to match.
@@ -933,13 +929,24 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+1, "ot_tail_called", 14) != 0)
         break;
       return ParsedAttr::AT_NotTailCalled;	 // "not_tail_called"
-    case 'o':	 // 3 strings to match.
+    case 'o':	 // 4 strings to match.
       switch (Name[1]) {
       default: break;
-      case 'b':	 // 1 string to match.
-        if (memcmp(Name.data()+2, "jc_root_class", 13) != 0)
+      case 'b':	 // 2 strings to match.
+        if (memcmp(Name.data()+2, "jc_", 3) != 0)
           break;
-        return ParsedAttr::AT_ObjCRootClass;	 // "objc_root_class"
+        switch (Name[5]) {
+        default: break;
+        case 'c':	 // 1 string to match.
+          if (memcmp(Name.data()+6, "lass_stub", 9) != 0)
+            break;
+          return ParsedAttr::AT_ObjCClassStub;	 // "objc_class_stub"
+        case 'r':	 // 1 string to match.
+          if (memcmp(Name.data()+6, "oot_class", 9) != 0)
+            break;
+          return ParsedAttr::AT_ObjCRootClass;	 // "objc_root_class"
+        }
+        break;
       case 'w':	 // 2 strings to match.
         if (memcmp(Name.data()+2, "nership_", 8) != 0)
           break;
@@ -1017,7 +1024,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_ReturnTypestate;	 // "return_typestate"
     }
     break;
-  case 17:	 // 6 strings to match.
+  case 17:	 // 7 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 2 strings to match.
@@ -1033,6 +1040,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
         return ParsedAttr::AT_AssertCapability;	 // "assert_capability"
       }
       break;
+    case 'h':	 // 1 string to match.
+      if (memcmp(Name.data()+1, "ip_pinned_shadow", 16) != 0)
+        break;
+      return ParsedAttr::AT_HIPPinnedShadow;	 // "hip_pinned_shadow"
     case 'o':	 // 2 strings to match.
       switch (Name[1]) {
       default: break;
@@ -1056,7 +1067,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_TransparentUnion;	 // "transparent_union"
     }
     break;
-  case 18:	 // 16 strings to match.
+  case 18:	 // 17 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 3 strings to match.
@@ -1092,6 +1103,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+1, "boutletcollection", 17) != 0)
         break;
       return ParsedAttr::AT_IBOutletCollection;	 // "iboutletcollection"
+    case 'm':	 // 1 string to match.
+      if (memcmp(Name.data()+1, "ig_server_routine", 17) != 0)
+        break;
+      return ParsedAttr::AT_MIGServerRoutine;	 // "mig_server_routine"
     case 'n':	 // 3 strings to match.
       if (memcmp(Name.data()+1, "o_s", 3) != 0)
         break;
@@ -1372,7 +1387,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_SharedTrylockFunction;	 // "shared_trylock_function"
     }
     break;
-  case 24:	 // 3 strings to match.
+  case 24:	 // 4 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 1 string to match.
@@ -1387,6 +1402,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+1, "bjc_externally_retained", 23) != 0)
         break;
       return ParsedAttr::AT_ObjCExternallyRetained;	 // "objc_externally_retained"
+    case 'p':	 // 1 string to match.
+      if (memcmp(Name.data()+1, "ass_dynamic_object_size", 23) != 0)
+        break;
+      return ParsedAttr::AT_PassObjectSize;	 // "pass_dynamic_object_size"
     }
     break;
   case 25:	 // 5 strings to match.
@@ -1644,9 +1663,13 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_Restrict;	 // "restrict"
     }
     break;
-  case 9:	 // 3 strings to match.
+  case 9:	 // 4 strings to match.
     switch (Name[0]) {
     default: break;
+    case 'a':	 // 1 string to match.
+      if (memcmp(Name.data()+1, "llocator", 8) != 0)
+        break;
+      return ParsedAttr::AT_MSAllocator;	 // "allocator"
     case 'd':	 // 2 strings to match.
       if (memcmp(Name.data()+1, "ll", 2) != 0)
         break;
@@ -1747,6 +1770,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::IgnoredAttribute;	 // "__device_builtin__"
     }
     break;
+  case 21:	 // 1 string to match.
+    if (memcmp(Name.data()+0, "__hip_pinned_shadow__", 21) != 0)
+      break;
+    return ParsedAttr::AT_HIPPinnedShadow;	 // "__hip_pinned_shadow__"
   case 31:	 // 2 strings to match.
     if (memcmp(Name.data()+0, "__device_builtin_", 17) != 0)
       break;
@@ -2472,9 +2499,13 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       break;
     }
     break;
-  case 19:	 // 8 strings to match.
+  case 19:	 // 9 strings to match.
     switch (Name[0]) {
     default: break;
+    case ':':	 // 1 string to match.
+      if (memcmp(Name.data()+1, ":no_unique_address", 18) != 0)
+        break;
+      return ParsedAttr::AT_NoUniqueAddress;	 // "::no_unique_address"
     case 'c':	 // 6 strings to match.
       if (memcmp(Name.data()+1, "lang::", 6) != 0)
         break;
@@ -2600,7 +2631,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_ReturnsNonNull;	 // "gnu::returns_nonnull"
     }
     break;
-  case 21:	 // 7 strings to match.
+  case 21:	 // 6 strings to match.
     if (memcmp(Name.data()+0, "clang::", 7) != 0)
       break;
     switch (Name[7]) {
@@ -2609,10 +2640,6 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+8, "lways_destroy", 13) != 0)
         break;
       return ParsedAttr::AT_AlwaysDestroy;	 // "clang::always_destroy"
-    case 'f':	 // 1 string to match.
-      if (memcmp(Name.data()+8, "ortify_stdlib", 13) != 0)
-        break;
-      return ParsedAttr::AT_FortifyStdLib;	 // "clang::fortify_stdlib"
     case 'i':	 // 1 string to match.
       if (memcmp(Name.data()+8, "ntel_ocl_bicc", 13) != 0)
         break;
@@ -2642,10 +2669,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_TestTypestate;	 // "clang::test_typestate"
     }
     break;
-  case 22:	 // 11 strings to match.
+  case 22:	 // 12 strings to match.
     switch (Name[0]) {
     default: break;
-    case 'c':	 // 10 strings to match.
+    case 'c':	 // 11 strings to match.
       if (memcmp(Name.data()+1, "lang::", 6) != 0)
         break;
       switch (Name[7]) {
@@ -2669,13 +2696,24 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
         if (memcmp(Name.data()+8, "ot_tail_called", 14) != 0)
           break;
         return ParsedAttr::AT_NotTailCalled;	 // "clang::not_tail_called"
-      case 'o':	 // 3 strings to match.
+      case 'o':	 // 4 strings to match.
         switch (Name[8]) {
         default: break;
-        case 'b':	 // 1 string to match.
-          if (memcmp(Name.data()+9, "jc_root_class", 13) != 0)
+        case 'b':	 // 2 strings to match.
+          if (memcmp(Name.data()+9, "jc_", 3) != 0)
             break;
-          return ParsedAttr::AT_ObjCRootClass;	 // "clang::objc_root_class"
+          switch (Name[12]) {
+          default: break;
+          case 'c':	 // 1 string to match.
+            if (memcmp(Name.data()+13, "lass_stub", 9) != 0)
+              break;
+            return ParsedAttr::AT_ObjCClassStub;	 // "clang::objc_class_stub"
+          case 'r':	 // 1 string to match.
+            if (memcmp(Name.data()+13, "oot_class", 9) != 0)
+              break;
+            return ParsedAttr::AT_ObjCRootClass;	 // "clang::objc_root_class"
+          }
+          break;
         case 'w':	 // 2 strings to match.
           if (memcmp(Name.data()+9, "nership_", 8) != 0)
             break;
@@ -2814,7 +2852,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_NoSanitizeSpecific;	 // "gnu::no_sanitize_address"
     }
     break;
-  case 25:	 // 12 strings to match.
+  case 25:	 // 13 strings to match.
     if (memcmp(Name.data()+0, "clang::", 7) != 0)
       break;
     switch (Name[7]) {
@@ -2844,6 +2882,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+8, "boutletcollection", 17) != 0)
         break;
       return ParsedAttr::AT_IBOutletCollection;	 // "clang::iboutletcollection"
+    case 'm':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "ig_server_routine", 17) != 0)
+        break;
+      return ParsedAttr::AT_MIGServerRoutine;	 // "clang::mig_server_routine"
     case 'n':	 // 2 strings to match.
       if (memcmp(Name.data()+8, "o_s", 3) != 0)
         break;
@@ -3100,10 +3142,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_AnyX86NoCallerSavedRegisters;	 // "gnu::no_caller_saved_registers"
     }
     break;
-  case 31:	 // 4 strings to match.
+  case 31:	 // 5 strings to match.
     switch (Name[0]) {
     default: break;
-    case 'c':	 // 3 strings to match.
+    case 'c':	 // 4 strings to match.
       if (memcmp(Name.data()+1, "lang::", 6) != 0)
         break;
       switch (Name[7]) {
@@ -3120,6 +3162,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
         if (memcmp(Name.data()+8, "bjc_externally_retained", 23) != 0)
           break;
         return ParsedAttr::AT_ObjCExternallyRetained;	 // "clang::objc_externally_retained"
+      case 'p':	 // 1 string to match.
+        if (memcmp(Name.data()+8, "ass_dynamic_object_size", 23) != 0)
+          break;
+        return ParsedAttr::AT_PassObjectSize;	 // "clang::pass_dynamic_object_size"
       }
       break;
     case 'g':	 // 1 string to match.
@@ -3542,33 +3588,22 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_XRayLogArgs;	 // "clang::xray_log_args"
     }
     break;
-  case 21:	 // 3 strings to match.
-    if (memcmp(Name.data()+0, "clang::", 7) != 0)
+  case 21:	 // 2 strings to match.
+    if (memcmp(Name.data()+0, "clang::objc_", 12) != 0)
       break;
-    switch (Name[7]) {
+    switch (Name[12]) {
     default: break;
-    case 'f':	 // 1 string to match.
-      if (memcmp(Name.data()+8, "ortify_stdlib", 13) != 0)
+    case 'e':	 // 1 string to match.
+      if (memcmp(Name.data()+13, "xception", 8) != 0)
         break;
-      return ParsedAttr::AT_FortifyStdLib;	 // "clang::fortify_stdlib"
-    case 'o':	 // 2 strings to match.
-      if (memcmp(Name.data()+8, "bjc_", 4) != 0)
+      return ParsedAttr::AT_ObjCException;	 // "clang::objc_exception"
+    case 'o':	 // 1 string to match.
+      if (memcmp(Name.data()+13, "wnership", 8) != 0)
         break;
-      switch (Name[12]) {
-      default: break;
-      case 'e':	 // 1 string to match.
-        if (memcmp(Name.data()+13, "xception", 8) != 0)
-          break;
-        return ParsedAttr::AT_ObjCException;	 // "clang::objc_exception"
-      case 'o':	 // 1 string to match.
-        if (memcmp(Name.data()+13, "wnership", 8) != 0)
-          break;
-        return ParsedAttr::AT_ObjCOwnership;	 // "clang::objc_ownership"
-      }
-      break;
+      return ParsedAttr::AT_ObjCOwnership;	 // "clang::objc_ownership"
     }
     break;
-  case 22:	 // 5 strings to match.
+  case 22:	 // 6 strings to match.
     if (memcmp(Name.data()+0, "clang::", 7) != 0)
       break;
     switch (Name[7]) {
@@ -3577,13 +3612,24 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+8, "ot_tail_called", 14) != 0)
         break;
       return ParsedAttr::AT_NotTailCalled;	 // "clang::not_tail_called"
-    case 'o':	 // 3 strings to match.
+    case 'o':	 // 4 strings to match.
       switch (Name[8]) {
       default: break;
-      case 'b':	 // 1 string to match.
-        if (memcmp(Name.data()+9, "jc_root_class", 13) != 0)
+      case 'b':	 // 2 strings to match.
+        if (memcmp(Name.data()+9, "jc_", 3) != 0)
           break;
-        return ParsedAttr::AT_ObjCRootClass;	 // "clang::objc_root_class"
+        switch (Name[12]) {
+        default: break;
+        case 'c':	 // 1 string to match.
+          if (memcmp(Name.data()+13, "lass_stub", 9) != 0)
+            break;
+          return ParsedAttr::AT_ObjCClassStub;	 // "clang::objc_class_stub"
+        case 'r':	 // 1 string to match.
+          if (memcmp(Name.data()+13, "oot_class", 9) != 0)
+            break;
+          return ParsedAttr::AT_ObjCRootClass;	 // "clang::objc_root_class"
+        }
+        break;
       case 'w':	 // 2 strings to match.
         if (memcmp(Name.data()+9, "nership_", 8) != 0)
           break;
@@ -3658,7 +3704,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_Ownership;	 // "clang::ownership_returns"
     }
     break;
-  case 25:	 // 9 strings to match.
+  case 25:	 // 10 strings to match.
     if (memcmp(Name.data()+0, "clang::", 7) != 0)
       break;
     switch (Name[7]) {
@@ -3679,6 +3725,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       if (memcmp(Name.data()+8, "boutletcollection", 17) != 0)
         break;
       return ParsedAttr::AT_IBOutletCollection;	 // "clang::iboutletcollection"
+    case 'm':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "ig_server_routine", 17) != 0)
+        break;
+      return ParsedAttr::AT_MIGServerRoutine;	 // "clang::mig_server_routine"
     case 'n':	 // 2 strings to match.
       if (memcmp(Name.data()+8, "o_s", 3) != 0)
         break;
@@ -3879,10 +3929,21 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_OSReturnsNotRetained;	 // "clang::os_returns_not_retained"
     }
     break;
-  case 31:	 // 1 string to match.
-    if (memcmp(Name.data()+0, "clang::objc_externally_retained", 31) != 0)
+  case 31:	 // 2 strings to match.
+    if (memcmp(Name.data()+0, "clang::", 7) != 0)
       break;
-    return ParsedAttr::AT_ObjCExternallyRetained;	 // "clang::objc_externally_retained"
+    switch (Name[7]) {
+    default: break;
+    case 'o':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "bjc_externally_retained", 23) != 0)
+        break;
+      return ParsedAttr::AT_ObjCExternallyRetained;	 // "clang::objc_externally_retained"
+    case 'p':	 // 1 string to match.
+      if (memcmp(Name.data()+8, "ass_dynamic_object_size", 23) != 0)
+        break;
+      return ParsedAttr::AT_PassObjectSize;	 // "clang::pass_dynamic_object_size"
+    }
+    break;
   case 32:	 // 1 string to match.
     if (memcmp(Name.data()+0, "clang::no_thread_safety_analysis", 32) != 0)
       break;

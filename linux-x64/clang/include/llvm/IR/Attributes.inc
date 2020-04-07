@@ -10,6 +10,7 @@ Cold,
 Convergent,
 Dereferenceable,
 DereferenceableOrNull,
+ImmArg,
 InAlloca,
 InReg,
 InaccessibleMemOnly,
@@ -24,6 +25,7 @@ NoBuiltin,
 NoCapture,
 NoCfCheck,
 NoDuplicate,
+NoFree,
 NoImplicitFloat,
 NoInline,
 NoRecurse,
@@ -57,6 +59,7 @@ StructRet,
 SwiftError,
 SwiftSelf,
 UWTable,
+WillReturn,
 WriteOnly,
 ZExt,
 #endif
@@ -74,6 +77,7 @@ static Attribute::AttrKind getAttrKindFromName(StringRef AttrName) {
     .Case("convergent", Attribute::Convergent)
     .Case("dereferenceable", Attribute::Dereferenceable)
     .Case("dereferenceable_or_null", Attribute::DereferenceableOrNull)
+    .Case("immarg", Attribute::ImmArg)
     .Case("inalloca", Attribute::InAlloca)
     .Case("inreg", Attribute::InReg)
     .Case("inaccessiblememonly", Attribute::InaccessibleMemOnly)
@@ -88,6 +92,7 @@ static Attribute::AttrKind getAttrKindFromName(StringRef AttrName) {
     .Case("nocapture", Attribute::NoCapture)
     .Case("nocf_check", Attribute::NoCfCheck)
     .Case("noduplicate", Attribute::NoDuplicate)
+    .Case("nofree", Attribute::NoFree)
     .Case("noimplicitfloat", Attribute::NoImplicitFloat)
     .Case("noinline", Attribute::NoInline)
     .Case("norecurse", Attribute::NoRecurse)
@@ -121,6 +126,7 @@ static Attribute::AttrKind getAttrKindFromName(StringRef AttrName) {
     .Case("swifterror", Attribute::SwiftError)
     .Case("swiftself", Attribute::SwiftSelf)
     .Case("uwtable", Attribute::UWTable)
+    .Case("willreturn", Attribute::WillReturn)
     .Case("writeonly", Attribute::WriteOnly)
     .Case("zeroext", Attribute::ZExt)
     .Default(Attribute::None);
@@ -208,6 +214,11 @@ struct DereferenceableOrNullAttr : EnumAttr {
     return llvm::Attribute::DereferenceableOrNull;
   }
 };
+struct ImmArgAttr : EnumAttr {
+  static enum Attribute::AttrKind getKind() {
+    return llvm::Attribute::ImmArg;
+  }
+};
 struct InAllocaAttr : EnumAttr {
   static enum Attribute::AttrKind getKind() {
     return llvm::Attribute::InAlloca;
@@ -276,6 +287,11 @@ struct NoCfCheckAttr : EnumAttr {
 struct NoDuplicateAttr : EnumAttr {
   static enum Attribute::AttrKind getKind() {
     return llvm::Attribute::NoDuplicate;
+  }
+};
+struct NoFreeAttr : EnumAttr {
+  static enum Attribute::AttrKind getKind() {
+    return llvm::Attribute::NoFree;
   }
 };
 struct NoImplicitFloatAttr : EnumAttr {
@@ -441,6 +457,11 @@ struct SwiftSelfAttr : EnumAttr {
 struct UWTableAttr : EnumAttr {
   static enum Attribute::AttrKind getKind() {
     return llvm::Attribute::UWTable;
+  }
+};
+struct WillReturnAttr : EnumAttr {
+  static enum Attribute::AttrKind getKind() {
+    return llvm::Attribute::WillReturn;
   }
 };
 struct WriteOnlyAttr : EnumAttr {

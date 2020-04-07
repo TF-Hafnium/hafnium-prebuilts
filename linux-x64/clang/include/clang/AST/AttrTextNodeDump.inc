@@ -6,11 +6,6 @@
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
 
-  void VisitAMDGPUFlatWorkGroupSizeAttr(const AMDGPUFlatWorkGroupSizeAttr *A) {
-    const auto *SA = cast<AMDGPUFlatWorkGroupSizeAttr>(A); (void)SA;
-    OS << " " << SA->getMin();
-    OS << " " << SA->getMax();
-  }
   void VisitAMDGPUNumSGPRAttr(const AMDGPUNumSGPRAttr *A) {
     const auto *SA = cast<AMDGPUNumSGPRAttr>(A); (void)SA;
     OS << " " << SA->getNumSGPR();
@@ -18,11 +13,6 @@
   void VisitAMDGPUNumVGPRAttr(const AMDGPUNumVGPRAttr *A) {
     const auto *SA = cast<AMDGPUNumVGPRAttr>(A); (void)SA;
     OS << " " << SA->getNumVGPR();
-  }
-  void VisitAMDGPUWavesPerEUAttr(const AMDGPUWavesPerEUAttr *A) {
-    const auto *SA = cast<AMDGPUWavesPerEUAttr>(A); (void)SA;
-    OS << " " << SA->getMin();
-    OS << " " << SA->getMax();
   }
   void VisitARMInterruptAttr(const ARMInterruptAttr *A) {
     const auto *SA = cast<ARMInterruptAttr>(A); (void)SA;
@@ -247,11 +237,6 @@
     const auto *SA = cast<FormatArgAttr>(A); (void)SA;
     OS << " " << SA->getFormatIdx().getSourceIndex();
   }
-  void VisitFortifyStdLibAttr(const FortifyStdLibAttr *A) {
-    const auto *SA = cast<FortifyStdLibAttr>(A); (void)SA;
-    OS << " " << SA->getType();
-    OS << " " << SA->getFlag();
-  }
   void VisitIBOutletCollectionAttr(const IBOutletCollectionAttr *A) {
     const auto *SA = cast<IBOutletCollectionAttr>(A); (void)SA;
     OS << " " << SA->getInterface().getAsString();
@@ -402,6 +387,38 @@
     for (const auto &Val : SA->args())
       OS << " " << Val.getSourceIndex();
   }
+  void VisitOMPAllocateDeclAttr(const OMPAllocateDeclAttr *A) {
+    const auto *SA = cast<OMPAllocateDeclAttr>(A); (void)SA;
+    switch(SA->getAllocatorType()) {
+    case OMPAllocateDeclAttr::OMPDefaultMemAlloc:
+      OS << " OMPDefaultMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPLargeCapMemAlloc:
+      OS << " OMPLargeCapMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPConstMemAlloc:
+      OS << " OMPConstMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPHighBWMemAlloc:
+      OS << " OMPHighBWMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPLowLatMemAlloc:
+      OS << " OMPLowLatMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPCGroupMemAlloc:
+      OS << " OMPCGroupMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPPTeamMemAlloc:
+      OS << " OMPPTeamMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPThreadMemAlloc:
+      OS << " OMPThreadMemAlloc";
+      break;
+    case OMPAllocateDeclAttr::OMPUserDefinedMemAlloc:
+      OS << " OMPUserDefinedMemAlloc";
+      break;
+    }
+  }
   void VisitOMPCaptureKindAttr(const OMPCaptureKindAttr *A) {
     const auto *SA = cast<OMPCaptureKindAttr>(A); (void)SA;
     OS << " " << SA->getCaptureKind();
@@ -524,6 +541,7 @@
   }
   void VisitPassObjectSizeAttr(const PassObjectSizeAttr *A) {
     const auto *SA = cast<PassObjectSizeAttr>(A); (void)SA;
+    OS << " " << A->getSpelling();
     OS << " " << SA->getType();
   }
   void VisitPcsAttr(const PcsAttr *A) {

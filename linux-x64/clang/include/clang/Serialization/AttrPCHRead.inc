@@ -20,8 +20,8 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     unsigned Spelling = Record.readInt();
-    unsigned min = Record.readInt();
-    unsigned max = Record.readInt();
+    Expr * min = Record.readExpr();
+    Expr * max = Record.readExpr();
     New = new (Context) AMDGPUFlatWorkGroupSizeAttr(Range, Context, min, max, Spelling);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
@@ -51,8 +51,8 @@
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     unsigned Spelling = Record.readInt();
-    unsigned min = Record.readInt();
-    unsigned max = Record.readInt();
+    Expr * min = Record.readExpr();
+    Expr * max = Record.readExpr();
     New = new (Context) AMDGPUWavesPerEUAttr(Range, Context, min, max, Spelling);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
@@ -925,17 +925,6 @@
     New->setImplicit(isImplicit);
     break;
   }
-  case attr::FortifyStdLib: {
-    bool isInherited = Record.readInt();
-    bool isImplicit = Record.readInt();
-    unsigned Spelling = Record.readInt();
-    int type = Record.readInt();
-    int flag = Record.readInt();
-    New = new (Context) FortifyStdLibAttr(Range, Context, type, flag, Spelling);
-    cast<InheritableAttr>(New)->setInherited(isInherited);
-    New->setImplicit(isImplicit);
-    break;
-  }
   case attr::GNUInline: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -960,6 +949,15 @@
     bool isImplicit = Record.readInt();
     unsigned Spelling = Record.readInt();
     New = new (Context) GuardedVarAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
+  case attr::HIPPinnedShadow: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) HIPPinnedShadowAttr(Range, Context, Spelling);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     break;
@@ -1107,11 +1105,29 @@
     New->setImplicit(isImplicit);
     break;
   }
+  case attr::MIGServerRoutine: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) MIGServerRoutineAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
   case attr::MSABI: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
     unsigned Spelling = Record.readInt();
     New = new (Context) MSABIAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
+  case attr::MSAllocator: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) MSAllocatorAttr(Range, Context, Spelling);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     break;
@@ -1477,6 +1493,15 @@
     New->setImplicit(isImplicit);
     break;
   }
+  case attr::NoUniqueAddress: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) NoUniqueAddressAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
   case attr::NonNull: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -1496,6 +1521,17 @@
     bool isImplicit = Record.readInt();
     unsigned Spelling = Record.readInt();
     New = new (Context) NotTailCalledAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
+  case attr::OMPAllocateDecl: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    OMPAllocateDeclAttr::AllocatorTypeTy allocatorType(static_cast<OMPAllocateDeclAttr::AllocatorTypeTy>(Record.readInt()));
+    Expr * allocator = Record.readExpr();
+    New = new (Context) OMPAllocateDeclAttr(Range, Context, allocatorType, allocator, Spelling);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     break;
@@ -1673,6 +1709,13 @@
     IdentifierInfo * instanceMethod = Record.getIdentifierInfo();
     New = new (Context) ObjCBridgeRelatedAttr(Range, Context, relatedClass, classMethod, instanceMethod, Spelling);
     cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
+  case attr::ObjCClassStub: {
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) ObjCClassStubAttr(Range, Context, Spelling);
     New->setImplicit(isImplicit);
     break;
   }

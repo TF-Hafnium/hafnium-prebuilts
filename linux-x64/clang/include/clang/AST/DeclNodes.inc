@@ -523,6 +523,12 @@ DECL_RANGE(Named, Label, UnresolvedUsingValue)
 
 #undef NAMED
 
+#ifndef OMPALLOCATE
+#  define OMPALLOCATE(Type, Base) DECL(Type, Base)
+#endif
+OMPALLOCATE(OMPAllocate, Decl)
+#undef OMPALLOCATE
+
 #ifndef OMPREQUIRES
 #  define OMPREQUIRES(Type, Base) DECL(Type, Base)
 #endif

@@ -15,6 +15,7 @@
   __interceptor_posix_memalign;
   __interceptor_pvalloc;
   __interceptor_realloc;
+  __interceptor_reallocarray;
   __interceptor_valloc;
   __interceptor_vfork;
   __libc_memalign;
@@ -65,6 +66,7 @@
   __sanitizer_print_stack_trace;
   __sanitizer_pvalloc;
   __sanitizer_realloc;
+  __sanitizer_reallocarray;
   __sanitizer_report_error_summary;
   __sanitizer_sandbox_on_notify;
   __sanitizer_set_death_callback;
@@ -94,6 +96,7 @@
   posix_memalign;
   pvalloc;
   realloc;
+  reallocarray;
   valloc;
   vfork;
 };

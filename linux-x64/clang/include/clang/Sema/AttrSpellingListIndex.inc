@@ -650,15 +650,6 @@
         return 1;
     break;
   }
-  case AT_FortifyStdLib: {
-    if (Name == "fortify_stdlib" && SyntaxUsed == 0 && Scope == "")
-        return 0;
-    if (Name == "fortify_stdlib" && SyntaxUsed == 1 && Scope == "clang")
-        return 1;
-    if (Name == "fortify_stdlib" && SyntaxUsed == 2 && Scope == "clang")
-        return 2;
-    break;
-  }
   case AT_GNUInline: {
     if (Name == "gnu_inline" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -675,6 +666,13 @@
     if (Name == "guarded_var" && SyntaxUsed == 0 && Scope == "")
         return 0;
     if (Name == "guarded_var" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    break;
+  }
+  case AT_HIPPinnedShadow: {
+    if (Name == "hip_pinned_shadow" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "__hip_pinned_shadow__" && SyntaxUsed == 3 && Scope == "")
         return 1;
     break;
   }
@@ -791,11 +789,25 @@
         return 4;
     break;
   }
+  case AT_MIGServerRoutine: {
+    if (Name == "mig_server_routine" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "mig_server_routine" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "mig_server_routine" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
   case AT_MSABI: {
     if (Name == "ms_abi" && SyntaxUsed == 0 && Scope == "")
         return 0;
     if (Name == "ms_abi" && SyntaxUsed == 1 && Scope == "gnu")
         return 1;
+    break;
+  }
+  case AT_MSAllocator: {
+    if (Name == "allocator" && SyntaxUsed == 3 && Scope == "")
+        return 0;
     break;
   }
   case AT_MSInheritance: {
@@ -1126,6 +1138,11 @@
         return 2;
     break;
   }
+  case AT_NoUniqueAddress: {
+    if (Name == "no_unique_address" && SyntaxUsed == 1 && Scope == "")
+        return 0;
+    break;
+  }
   case AT_NonNull: {
     if (Name == "nonnull" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -1229,6 +1246,15 @@
     if (Name == "objc_bridge_related" && SyntaxUsed == 1 && Scope == "clang")
         return 1;
     if (Name == "objc_bridge_related" && SyntaxUsed == 2 && Scope == "clang")
+        return 2;
+    break;
+  }
+  case AT_ObjCClassStub: {
+    if (Name == "objc_class_stub" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "objc_class_stub" && SyntaxUsed == 1 && Scope == "clang")
+        return 1;
+    if (Name == "objc_class_stub" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
     break;
   }
@@ -1549,6 +1575,12 @@
         return 1;
     if (Name == "pass_object_size" && SyntaxUsed == 2 && Scope == "clang")
         return 2;
+    if (Name == "pass_dynamic_object_size" && SyntaxUsed == 0 && Scope == "")
+        return 3;
+    if (Name == "pass_dynamic_object_size" && SyntaxUsed == 1 && Scope == "clang")
+        return 4;
+    if (Name == "pass_dynamic_object_size" && SyntaxUsed == 2 && Scope == "clang")
+        return 5;
     break;
   }
   case AT_Pcs: {

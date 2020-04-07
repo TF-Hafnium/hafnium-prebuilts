@@ -8,9 +8,9 @@ third_party {
   }
   url {
     type: GIT
-    value: "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/master/clang-r353983c/"
+    value: "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/master/clang-r365631c1/"
   }
-  version: "9.0.3"
-  last_upgrade_date { year: 2019 month: 10 day: 22 }
+  version: "9.0.8"
+  last_upgrade_date { year: 2020 month: 04 day: 07 }
   license_type: NOTICE
 }

@@ -154,6 +154,16 @@ set_target_properties(LLVMBitWriter PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMBitWriter )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMBitWriter "${_IMPORT_PREFIX}/lib64/libLLVMBitWriter.a" )
 
+# Import target "LLVMBitstreamReader" for configuration "Release"
+set_property(TARGET LLVMBitstreamReader APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMBitstreamReader PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMBitstreamReader.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMBitstreamReader )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMBitstreamReader "${_IMPORT_PREFIX}/lib64/libLLVMBitstreamReader.a" )
+
 # Import target "LLVMTransformUtils" for configuration "Release"
 set_property(TARGET LLVMTransformUtils APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVMTransformUtils PROPERTIES
@@ -344,15 +354,15 @@ set_target_properties(LLVMOption PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMOption )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMOption "${_IMPORT_PREFIX}/lib64/libLLVMOption.a" )
 
-# Import target "LLVMOptRemarks" for configuration "Release"
-set_property(TARGET LLVMOptRemarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(LLVMOptRemarks PROPERTIES
+# Import target "LLVMRemarks" for configuration "Release"
+set_property(TARGET LLVMRemarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMRemarks PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMOptRemarks.a"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMRemarks.a"
   )
 
-list(APPEND _IMPORT_CHECK_TARGETS LLVMOptRemarks )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMOptRemarks "${_IMPORT_PREFIX}/lib64/libLLVMOptRemarks.a" )
+list(APPEND _IMPORT_CHECK_TARGETS LLVMRemarks )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMRemarks "${_IMPORT_PREFIX}/lib64/libLLVMRemarks.a" )
 
 # Import target "LLVMDebugInfoDWARF" for configuration "Release"
 set_property(TARGET LLVMDebugInfoDWARF APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -363,6 +373,16 @@ set_target_properties(LLVMDebugInfoDWARF PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVMDebugInfoDWARF )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMDebugInfoDWARF "${_IMPORT_PREFIX}/lib64/libLLVMDebugInfoDWARF.a" )
+
+# Import target "LLVMDebugInfoGSYM" for configuration "Release"
+set_property(TARGET LLVMDebugInfoGSYM APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMDebugInfoGSYM PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMDebugInfoGSYM.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMDebugInfoGSYM )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMDebugInfoGSYM "${_IMPORT_PREFIX}/lib64/libLLVMDebugInfoGSYM.a" )
 
 # Import target "LLVMDebugInfoMSF" for configuration "Release"
 set_property(TARGET LLVMDebugInfoMSF APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -423,6 +443,16 @@ set_target_properties(LLVMInterpreter PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVMInterpreter )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMInterpreter "${_IMPORT_PREFIX}/lib64/libLLVMInterpreter.a" )
+
+# Import target "LLVMJITLink" for configuration "Release"
+set_property(TARGET LLVMJITLink APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(LLVMJITLink PROPERTIES
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMJITLink.a"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS LLVMJITLink )
+list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMJITLink "${_IMPORT_PREFIX}/lib64/libLLVMJITLink.a" )
 
 # Import target "LLVMMCJIT" for configuration "Release"
 set_property(TARGET LLVMMCJIT APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -494,16 +524,6 @@ set_target_properties(LLVMAArch64Disassembler PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMAArch64Disassembler )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMAArch64Disassembler "${_IMPORT_PREFIX}/lib64/libLLVMAArch64Disassembler.a" )
 
-# Import target "LLVMAArch64AsmPrinter" for configuration "Release"
-set_property(TARGET LLVMAArch64AsmPrinter APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(LLVMAArch64AsmPrinter PROPERTIES
-  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMAArch64AsmPrinter.a"
-  )
-
-list(APPEND _IMPORT_CHECK_TARGETS LLVMAArch64AsmPrinter )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMAArch64AsmPrinter "${_IMPORT_PREFIX}/lib64/libLLVMAArch64AsmPrinter.a" )
-
 # Import target "LLVMAArch64Desc" for configuration "Release"
 set_property(TARGET LLVMAArch64Desc APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVMAArch64Desc PROPERTIES
@@ -563,16 +583,6 @@ set_target_properties(LLVMARMDisassembler PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVMARMDisassembler )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMARMDisassembler "${_IMPORT_PREFIX}/lib64/libLLVMARMDisassembler.a" )
-
-# Import target "LLVMARMAsmPrinter" for configuration "Release"
-set_property(TARGET LLVMARMAsmPrinter APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(LLVMARMAsmPrinter PROPERTIES
-  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMARMAsmPrinter.a"
-  )
-
-list(APPEND _IMPORT_CHECK_TARGETS LLVMARMAsmPrinter )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMARMAsmPrinter "${_IMPORT_PREFIX}/lib64/libLLVMARMAsmPrinter.a" )
 
 # Import target "LLVMARMDesc" for configuration "Release"
 set_property(TARGET LLVMARMDesc APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -634,16 +644,6 @@ set_target_properties(LLVMBPFDisassembler PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS LLVMBPFDisassembler )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMBPFDisassembler "${_IMPORT_PREFIX}/lib64/libLLVMBPFDisassembler.a" )
 
-# Import target "LLVMBPFAsmPrinter" for configuration "Release"
-set_property(TARGET LLVMBPFAsmPrinter APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(LLVMBPFAsmPrinter PROPERTIES
-  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMBPFAsmPrinter.a"
-  )
-
-list(APPEND _IMPORT_CHECK_TARGETS LLVMBPFAsmPrinter )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMBPFAsmPrinter "${_IMPORT_PREFIX}/lib64/libLLVMBPFAsmPrinter.a" )
-
 # Import target "LLVMBPFDesc" for configuration "Release"
 set_property(TARGET LLVMBPFDesc APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(LLVMBPFDesc PROPERTIES
@@ -693,16 +693,6 @@ set_target_properties(LLVMX86Disassembler PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS LLVMX86Disassembler )
 list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMX86Disassembler "${_IMPORT_PREFIX}/lib64/libLLVMX86Disassembler.a" )
-
-# Import target "LLVMX86AsmPrinter" for configuration "Release"
-set_property(TARGET LLVMX86AsmPrinter APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(LLVMX86AsmPrinter PROPERTIES
-  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "CXX"
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libLLVMX86AsmPrinter.a"
-  )
-
-list(APPEND _IMPORT_CHECK_TARGETS LLVMX86AsmPrinter )
-list(APPEND _IMPORT_CHECK_FILES_FOR_LLVMX86AsmPrinter "${_IMPORT_PREFIX}/lib64/libLLVMX86AsmPrinter.a" )
 
 # Import target "LLVMX86Desc" for configuration "Release"
 set_property(TARGET LLVMX86Desc APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -889,6 +879,36 @@ set_target_properties(llvm-profdata PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS llvm-profdata )
 list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-profdata "${_IMPORT_PREFIX}/bin/llvm-profdata" )
+
+# Import target "SampleAnalyzerPlugin" for configuration "Release"
+set_property(TARGET SampleAnalyzerPlugin APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(SampleAnalyzerPlugin PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/SampleAnalyzerPlugin.so"
+  IMPORTED_NO_SONAME_RELEASE "TRUE"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS SampleAnalyzerPlugin )
+list(APPEND _IMPORT_CHECK_FILES_FOR_SampleAnalyzerPlugin "${_IMPORT_PREFIX}/lib64/SampleAnalyzerPlugin.so" )
+
+# Import target "CheckerDependencyHandlingAnalyzerPlugin" for configuration "Release"
+set_property(TARGET CheckerDependencyHandlingAnalyzerPlugin APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(CheckerDependencyHandlingAnalyzerPlugin PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/CheckerDependencyHandlingAnalyzerPlugin.so"
+  IMPORTED_NO_SONAME_RELEASE "TRUE"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS CheckerDependencyHandlingAnalyzerPlugin )
+list(APPEND _IMPORT_CHECK_FILES_FOR_CheckerDependencyHandlingAnalyzerPlugin "${_IMPORT_PREFIX}/lib64/CheckerDependencyHandlingAnalyzerPlugin.so" )
+
+# Import target "CheckerOptionHandlingAnalyzerPlugin" for configuration "Release"
+set_property(TARGET CheckerOptionHandlingAnalyzerPlugin APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(CheckerOptionHandlingAnalyzerPlugin PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/CheckerOptionHandlingAnalyzerPlugin.so"
+  IMPORTED_NO_SONAME_RELEASE "TRUE"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS CheckerOptionHandlingAnalyzerPlugin )
+list(APPEND _IMPORT_CHECK_FILES_FOR_CheckerOptionHandlingAnalyzerPlugin "${_IMPORT_PREFIX}/lib64/CheckerOptionHandlingAnalyzerPlugin.so" )
 
 # Import target "bugpoint" for configuration "Release"
 set_property(TARGET bugpoint APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -1079,6 +1099,15 @@ set_target_properties(llvm-extract PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS llvm-extract )
 list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-extract "${_IMPORT_PREFIX}/bin/llvm-extract" )
 
+# Import target "llvm-jitlink" for configuration "Release"
+set_property(TARGET llvm-jitlink APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(llvm-jitlink PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/bin/llvm-jitlink"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS llvm-jitlink )
+list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-jitlink "${_IMPORT_PREFIX}/bin/llvm-jitlink" )
+
 # Import target "llvm-link" for configuration "Release"
 set_property(TARGET llvm-link APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(llvm-link PROPERTIES
@@ -1087,6 +1116,15 @@ set_target_properties(llvm-link PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS llvm-link )
 list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-link "${_IMPORT_PREFIX}/bin/llvm-link" )
+
+# Import target "llvm-lipo" for configuration "Release"
+set_property(TARGET llvm-lipo APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(llvm-lipo PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/bin/llvm-lipo"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS llvm-lipo )
+list(APPEND _IMPORT_CHECK_FILES_FOR_llvm-lipo "${_IMPORT_PREFIX}/bin/llvm-lipo" )
 
 # Import target "llvm-lto2" for configuration "Release"
 set_property(TARGET llvm-lto2 APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -1296,15 +1334,15 @@ set_target_properties(opt PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS opt )
 list(APPEND _IMPORT_CHECK_FILES_FOR_opt "${_IMPORT_PREFIX}/bin/opt" )
 
-# Import target "OptRemarks" for configuration "Release"
-set_property(TARGET OptRemarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(OptRemarks PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libOptRemarks.so.9svn"
-  IMPORTED_SONAME_RELEASE "libOptRemarks.so.9svn"
+# Import target "Remarks" for configuration "Release"
+set_property(TARGET Remarks APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(Remarks PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib64/libRemarks.so.9svn"
+  IMPORTED_SONAME_RELEASE "libRemarks.so.9svn"
   )
 
-list(APPEND _IMPORT_CHECK_TARGETS OptRemarks )
-list(APPEND _IMPORT_CHECK_FILES_FOR_OptRemarks "${_IMPORT_PREFIX}/lib64/libOptRemarks.so.9svn" )
+list(APPEND _IMPORT_CHECK_TARGETS Remarks )
+list(APPEND _IMPORT_CHECK_FILES_FOR_Remarks "${_IMPORT_PREFIX}/lib64/libRemarks.so.9svn" )
 
 # Import target "sancov" for configuration "Release"
 set_property(TARGET sancov APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
