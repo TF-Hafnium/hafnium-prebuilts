@@ -83,6 +83,12 @@ FRIENDTEMPLATE(FriendTemplate, Decl)
 IMPORT(Import, Decl)
 #undef IMPORT
 
+#ifndef LIFETIMEEXTENDEDTEMPORARY
+#  define LIFETIMEEXTENDEDTEMPORARY(Type, Base) DECL(Type, Base)
+#endif
+LIFETIMEEXTENDEDTEMPORARY(LifetimeExtendedTemporary, Decl)
+#undef LIFETIMEEXTENDEDTEMPORARY
+
 #ifndef LINKAGESPEC
 #  define LINKAGESPEC(Type, Base) DECL(Type, Base)
 #endif
@@ -184,6 +190,12 @@ ABSTRACT_DECL(TEMPLATE(Template, NamedDecl))
 #endif
 BUILTINTEMPLATE(BuiltinTemplate, TemplateDecl)
 #undef BUILTINTEMPLATE
+
+#ifndef CONCEPT
+#  define CONCEPT(Type, Base) TEMPLATE(Type, Base)
+#endif
+CONCEPT(Concept, TemplateDecl)
+#undef CONCEPT
 
 #ifndef REDECLARABLETEMPLATE
 #  define REDECLARABLETEMPLATE(Type, Base) TEMPLATE(Type, Base)
@@ -497,6 +509,12 @@ ENUMCONSTANT(EnumConstant, ValueDecl)
 INDIRECTFIELD(IndirectField, ValueDecl)
 #undef INDIRECTFIELD
 
+#ifndef MSGUID
+#  define MSGUID(Type, Base) VALUE(Type, Base)
+#endif
+MSGUID(MSGuid, ValueDecl)
+#undef MSGUID
+
 #ifndef OMPDECLAREMAPPER
 #  define OMPDECLAREMAPPER(Type, Base) VALUE(Type, Base)
 #endif
@@ -508,6 +526,12 @@ OMPDECLAREMAPPER(OMPDeclareMapper, ValueDecl)
 #endif
 OMPDECLAREREDUCTION(OMPDeclareReduction, ValueDecl)
 #undef OMPDECLAREREDUCTION
+
+#ifndef TEMPLATEPARAMOBJECT
+#  define TEMPLATEPARAMOBJECT(Type, Base) VALUE(Type, Base)
+#endif
+TEMPLATEPARAMOBJECT(TemplateParamObject, ValueDecl)
+#undef TEMPLATEPARAMOBJECT
 
 #ifndef UNRESOLVEDUSINGVALUE
 #  define UNRESOLVEDUSINGVALUE(Type, Base) VALUE(Type, Base)
@@ -559,6 +583,12 @@ PRAGMACOMMENT(PragmaComment, Decl)
 PRAGMADETECTMISMATCH(PragmaDetectMismatch, Decl)
 #undef PRAGMADETECTMISMATCH
 
+#ifndef REQUIRESEXPRBODY
+#  define REQUIRESEXPRBODY(Type, Base) DECL(Type, Base)
+#endif
+REQUIRESEXPRBODY(RequiresExprBody, Decl)
+#undef REQUIRESEXPRBODY
+
 #ifndef STATICASSERT
 #  define STATICASSERT(Type, Base) DECL(Type, Base)
 #endif
@@ -603,6 +633,7 @@ DECL_CONTEXT(Namespace)
 DECL_CONTEXT(OMPDeclareMapper)
 DECL_CONTEXT(OMPDeclareReduction)
 DECL_CONTEXT(ObjCMethod)
+DECL_CONTEXT(RequiresExprBody)
 DECL_CONTEXT(TranslationUnit)
 #undef DECL_CONTEXT
 #undef DECL_CONTEXT_BASE

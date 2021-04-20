@@ -8,27 +8,67 @@
 #ifndef LLVM_MC_MCSYMBOLXCOFF_H
 #define LLVM_MC_MCSYMBOLXCOFF_H
 
+#include "llvm/ADT/Optional.h"
+#include "llvm/ADT/StringRef.h"
 #include "llvm/BinaryFormat/XCOFF.h"
 #include "llvm/MC/MCSymbol.h"
 
 namespace llvm {
 
-class GlobalValue;
+class MCSectionXCOFF;
 
 class MCSymbolXCOFF : public MCSymbol {
-  // The IR symbol this MCSymbolXCOFF is based on. It is set on function
-  // entry point symbols when they are the callee operand of a direct call
-  // SDNode.
-  const GlobalValue *GV = nullptr;
-
 public:
   MCSymbolXCOFF(const StringMapEntry<bool> *Name, bool isTemporary)
       : MCSymbol(SymbolKindXCOFF, Name, isTemporary) {}
 
-  void setGlobalValue(const GlobalValue *G) { GV = G; }
-  const GlobalValue *getGlobalValue() const { return GV; }
-
   static bool classof(const MCSymbol *S) { return S->isXCOFF(); }
+
+  static StringRef getUnqualifiedName(StringRef Name) {
+    if (Name.back() == ']') {
+      StringRef Lhs, Rhs;
+      std::tie(Lhs, Rhs) = Name.rsplit('[');
+      assert(!Rhs.empty() && "Invalid SMC format in XCOFF symbol.");
+      return Lhs;
+    }
+    return Name;
+  }
+
+  void setStorageClass(XCOFF::StorageClass SC) {
+    StorageClass = SC;
+  };
+
+  XCOFF::StorageClass getStorageClass() const {
+    assert(StorageClass.hasValue() &&
+           "StorageClass not set on XCOFF MCSymbol.");
+    return StorageClass.getValue();
+  }
+
+  StringRef getUnqualifiedName() const { return getUnqualifiedName(getName()); }
+
+  MCSectionXCOFF *getRepresentedCsect() const;
+
+  void setRepresentedCsect(MCSectionXCOFF *C);
+
+  void setVisibilityType(XCOFF::VisibilityType SVT) { VisibilityType = SVT; };
+
+  XCOFF::VisibilityType getVisibilityType() const { return VisibilityType; }
+
+  bool hasRename() const { return !SymbolTableName.empty(); }
+
+  void setSymbolTableName(StringRef STN) { SymbolTableName = STN; }
+
+  StringRef getSymbolTableName() const {
+    if (hasRename())
+      return SymbolTableName;
+    return getUnqualifiedName();
+  }
+
+private:
+  Optional<XCOFF::StorageClass> StorageClass;
+  MCSectionXCOFF *RepresentedCsect = nullptr;
+  XCOFF::VisibilityType VisibilityType = XCOFF::SYM_V_UNSPECIFIED;
+  StringRef SymbolTableName;
 };
 
 } // end namespace llvm

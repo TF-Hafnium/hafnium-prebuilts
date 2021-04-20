@@ -15,7 +15,8 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/DebugInfo/CodeView/CodeViewError.h"
-#include "llvm/DebugInfo/CodeView/TypeRecord.h"
+#include "llvm/DebugInfo/CodeView/GUID.h"
+#include "llvm/DebugInfo/CodeView/TypeIndex.h"
 #include "llvm/Support/BinaryStreamReader.h"
 #include "llvm/Support/BinaryStreamWriter.h"
 #include "llvm/Support/Error.h"
@@ -29,9 +30,13 @@ namespace codeview {
 
 class CodeViewRecordStreamer {
 public:
-  virtual void EmitBytes(StringRef Data) = 0;
-  virtual void EmitIntValue(uint64_t Value, unsigned Size) = 0;
-  virtual void EmitBinaryData(StringRef Data) = 0;
+  virtual void emitBytes(StringRef Data) = 0;
+  virtual void emitIntValue(uint64_t Value, unsigned Size) = 0;
+  virtual void emitBinaryData(StringRef Data) = 0;
+  virtual void AddComment(const Twine &T) = 0;
+  virtual void AddRawComment(const Twine &T) = 0;
+  virtual bool isVerboseAsm() = 0;
+  virtual std::string getTypeName(TypeIndex TI) = 0;
   virtual ~CodeViewRecordStreamer() = default;
 };
 
@@ -59,7 +64,7 @@ public:
   Error beginRecord(Optional<uint32_t> MaxLength);
   Error endRecord();
 
-  Error mapInteger(TypeIndex &TypeInd);
+  Error mapInteger(TypeIndex &TypeInd, const Twine &Comment = "");
 
   bool isStreaming() const {
     return (Streamer != nullptr) && (Reader == nullptr) && (Writer == nullptr);
@@ -77,7 +82,7 @@ public:
     if (isStreaming()) {
       StringRef BytesSR =
           StringRef((reinterpret_cast<const char *>(&Value)), sizeof(Value));
-      Streamer->EmitBytes(BytesSR);
+      Streamer->emitBytes(BytesSR);
       incrStreamedLen(sizeof(T));
       return Error::success();
     }
@@ -92,9 +97,10 @@ public:
     return Error::success();
   }
 
-  template <typename T> Error mapInteger(T &Value) {
+  template <typename T> Error mapInteger(T &Value, const Twine &Comment = "") {
     if (isStreaming()) {
-      Streamer->EmitIntValue((int)Value, sizeof(T));
+      emitComment(Comment);
+      Streamer->emitIntValue((int)Value, sizeof(T));
       incrStreamedLen(sizeof(T));
       return Error::success();
     }
@@ -105,17 +111,17 @@ public:
     return Reader->readInteger(Value);
   }
 
-  template <typename T> Error mapEnum(T &Value) {
+  template <typename T> Error mapEnum(T &Value, const Twine &Comment = "") {
     if (!isStreaming() && sizeof(Value) > maxFieldLength())
       return make_error<CodeViewError>(cv_error_code::insufficient_buffer);
 
-    using U = typename std::underlying_type<T>::type;
+    using U = std::underlying_type_t<T>;
     U X;
 
     if (isWriting() || isStreaming())
       X = static_cast<U>(Value);
 
-    if (auto EC = mapInteger(X))
+    if (auto EC = mapInteger(X, Comment))
       return EC;
 
     if (isReading())
@@ -124,20 +130,23 @@ public:
     return Error::success();
   }
 
-  Error mapEncodedInteger(int64_t &Value);
-  Error mapEncodedInteger(uint64_t &Value);
-  Error mapEncodedInteger(APSInt &Value);
-  Error mapStringZ(StringRef &Value);
-  Error mapGuid(GUID &Guid);
+  Error mapEncodedInteger(int64_t &Value, const Twine &Comment = "");
+  Error mapEncodedInteger(uint64_t &Value, const Twine &Comment = "");
+  Error mapEncodedInteger(APSInt &Value, const Twine &Comment = "");
+  Error mapStringZ(StringRef &Value, const Twine &Comment = "");
+  Error mapGuid(GUID &Guid, const Twine &Comment = "");
 
-  Error mapStringZVectorZ(std::vector<StringRef> &Value);
+  Error mapStringZVectorZ(std::vector<StringRef> &Value,
+                          const Twine &Comment = "");
 
   template <typename SizeType, typename T, typename ElementMapper>
-  Error mapVectorN(T &Items, const ElementMapper &Mapper) {
+  Error mapVectorN(T &Items, const ElementMapper &Mapper,
+                   const Twine &Comment = "") {
     SizeType Size;
     if (isStreaming()) {
       Size = static_cast<SizeType>(Items.size());
-      Streamer->EmitIntValue(Size, sizeof(Size));
+      emitComment(Comment);
+      Streamer->emitIntValue(Size, sizeof(Size));
       incrStreamedLen(sizeof(Size)); // add 1 for the delimiter
 
       for (auto &X : Items) {
@@ -168,7 +177,9 @@ public:
   }
 
   template <typename T, typename ElementMapper>
-  Error mapVectorTail(T &Items, const ElementMapper &Mapper) {
+  Error mapVectorTail(T &Items, const ElementMapper &Mapper,
+                      const Twine &Comment = "") {
+    emitComment(Comment);
     if (isStreaming() || isWriting()) {
       for (auto &Item : Items) {
         if (auto EC = Mapper(*this, Item))
@@ -186,8 +197,9 @@ public:
     return Error::success();
   }
 
-  Error mapByteVectorTail(ArrayRef<uint8_t> &Bytes);
-  Error mapByteVectorTail(std::vector<uint8_t> &Bytes);
+  Error mapByteVectorTail(ArrayRef<uint8_t> &Bytes, const Twine &Comment = "");
+  Error mapByteVectorTail(std::vector<uint8_t> &Bytes,
+                          const Twine &Comment = "");
 
   Error padToAlignment(uint32_t Align);
   Error skipPadding();
@@ -198,9 +210,16 @@ public:
     return 0;
   }
 
+  void emitRawComment(const Twine &T) {
+    if (isStreaming() && Streamer->isVerboseAsm())
+      Streamer->AddRawComment(T);
+  }
+
 private:
-  void emitEncodedSignedInteger(const int64_t &Value);
-  void emitEncodedUnsignedInteger(const uint64_t &Value);
+  void emitEncodedSignedInteger(const int64_t &Value,
+                                const Twine &Comment = "");
+  void emitEncodedUnsignedInteger(const uint64_t &Value,
+                                  const Twine &Comment = "");
   Error writeEncodedSignedInteger(const int64_t &Value);
   Error writeEncodedUnsignedInteger(const uint64_t &Value);
 
@@ -212,6 +231,14 @@ private:
   void resetStreamedLen() {
     if (isStreaming())
       StreamedLen = 4; // The record prefix is 4 bytes long
+  }
+
+  void emitComment(const Twine &Comment) {
+    if (isStreaming() && Streamer->isVerboseAsm()) {
+      Twine TComment(Comment);
+      if (!TComment.isTriviallyEmpty())
+        Streamer->AddComment(TComment);
+    }
   }
 
   struct RecordLimit {

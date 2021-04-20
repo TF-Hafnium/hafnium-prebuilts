@@ -58,10 +58,16 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) AcquireCapabilityAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) AcquireCapabilityAttr(C, *A, tempInstArgs, A->args_size());
+    }
+    case attr::AcquireHandle: {
+      const auto *A = cast<AcquireHandleAttr>(At);
+      return A->clone(C);
     }
     case attr::AcquiredAfter: {
       const auto *A = cast<AcquiredAfterAttr>(At);
@@ -73,10 +79,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) AcquiredAfterAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) AcquiredAfterAttr(C, *A, tempInstArgs, A->args_size());
     }
     case attr::AcquiredBefore: {
       const auto *A = cast<AcquiredBeforeAttr>(At);
@@ -88,10 +96,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) AcquiredBeforeAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) AcquiredBeforeAttr(C, *A, tempInstArgs, A->args_size());
     }
     case attr::AddressSpace: {
       const auto *A = cast<AddressSpaceAttr>(At);
@@ -103,6 +113,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::AlignMac68k: {
       const auto *A = cast<AlignMac68kAttr>(At);
+      return A->clone(C);
+    }
+    case attr::AlignNatural: {
+      const auto *A = cast<AlignNaturalAttr>(At);
       return A->clone(C);
     }
     case attr::AlignValue: {
@@ -119,7 +133,7 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::AllocSize: {
       const auto *A = cast<AllocSizeAttr>(At);
-      return new (C) AllocSizeAttr(A->getLocation(), C, A->getElemSizeParam(), A->getNumElemsParam(), A->getSpellingListIndex());
+      return new (C) AllocSizeAttr(C, *A, A->getElemSizeParam(), A->getNumElemsParam());
     }
     case attr::AlwaysDestroy: {
       const auto *A = cast<AlwaysDestroyAttr>(At);
@@ -157,6 +171,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<ArgumentWithTypeTagAttr>(At);
       return A->clone(C);
     }
+    case attr::ArmBuiltinAlias: {
+      const auto *A = cast<ArmBuiltinAliasAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ArmMveStrictPolymorphism: {
+      const auto *A = cast<ArmMveStrictPolymorphismAttr>(At);
+      return A->clone(C);
+    }
     case attr::Artificial: {
       const auto *A = cast<ArtificialAttr>(At);
       return A->clone(C);
@@ -175,10 +197,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) AssertCapabilityAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) AssertCapabilityAttr(C, *A, tempInstArgs, A->args_size());
     }
     case attr::AssertExclusiveLock: {
       const auto *A = cast<AssertExclusiveLockAttr>(At);
@@ -190,10 +214,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) AssertExclusiveLockAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) AssertExclusiveLockAttr(C, *A, tempInstArgs, A->args_size());
     }
     case attr::AssertSharedLock: {
       const auto *A = cast<AssertSharedLockAttr>(At);
@@ -205,17 +231,27 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) AssertSharedLockAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) AssertSharedLockAttr(C, *A, tempInstArgs, A->args_size());
     }
     case attr::AssumeAligned: {
       const auto *A = cast<AssumeAlignedAttr>(At);
       return A->clone(C);
     }
+    case attr::Assumption: {
+      const auto *A = cast<AssumptionAttr>(At);
+      return A->clone(C);
+    }
     case attr::Availability: {
       const auto *A = cast<AvailabilityAttr>(At);
+      return A->clone(C);
+    }
+    case attr::BPFPreserveAccessIndex: {
+      const auto *A = cast<BPFPreserveAccessIndexAttr>(At);
       return A->clone(C);
     }
     case attr::Blocks: {
@@ -236,6 +272,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::CFConsumed: {
       const auto *A = cast<CFConsumedAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CFGuard: {
+      const auto *A = cast<CFGuardAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CFICanonicalJumpTable: {
+      const auto *A = cast<CFICanonicalJumpTableAttr>(At);
       return A->clone(C);
     }
     case attr::CFReturnsNotRetained: {
@@ -264,6 +308,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::CUDADevice: {
       const auto *A = cast<CUDADeviceAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CUDADeviceBuiltinSurfaceType: {
+      const auto *A = cast<CUDADeviceBuiltinSurfaceTypeAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CUDADeviceBuiltinTextureType: {
+      const auto *A = cast<CUDADeviceBuiltinTextureTypeAttr>(At);
       return A->clone(C);
     }
     case attr::CUDAGlobal: {
@@ -298,6 +350,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<CallbackAttr>(At);
       return A->clone(C);
     }
+    case attr::CalledOnce: {
+      const auto *A = cast<CalledOnceAttr>(At);
+      return A->clone(C);
+    }
     case attr::Capability: {
       const auto *A = cast<CapabilityAttr>(At);
       return A->clone(C);
@@ -314,6 +370,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<CleanupAttr>(At);
       return A->clone(C);
     }
+    case attr::CmseNSCall: {
+      const auto *A = cast<CmseNSCallAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CmseNSEntry: {
+      const auto *A = cast<CmseNSEntryAttr>(At);
+      return A->clone(C);
+    }
     case attr::CodeSeg: {
       const auto *A = cast<CodeSegAttr>(At);
       return A->clone(C);
@@ -328,6 +392,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::Const: {
       const auto *A = cast<ConstAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ConstInit: {
+      const auto *A = cast<ConstInitAttr>(At);
       return A->clone(C);
     }
     case attr::Constructor: {
@@ -380,9 +448,11 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getCond(), TemplateArgs);
-        tempInstCond = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstCond = Result.get();
       }
-      return new (C) DiagnoseIfAttr(A->getLocation(), C, tempInstCond, A->getMessage(), A->getDiagnosticType(), A->getArgDependent(), A->getParent(), A->getSpellingListIndex());
+      return new (C) DiagnoseIfAttr(C, *A, tempInstCond, A->getMessage(), A->getDiagnosticType(), A->getArgDependent(), A->getParent());
     }
     case attr::DisableTailCalls: {
       const auto *A = cast<DisableTailCallsAttr>(At);
@@ -398,9 +468,19 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getCond(), TemplateArgs);
-        tempInstCond = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstCond = Result.get();
       }
-      return new (C) EnableIfAttr(A->getLocation(), C, tempInstCond, A->getMessage(), A->getSpellingListIndex());
+      return new (C) EnableIfAttr(C, *A, tempInstCond, A->getMessage());
+    }
+    case attr::EnforceTCB: {
+      const auto *A = cast<EnforceTCBAttr>(At);
+      return A->clone(C);
+    }
+    case attr::EnforceTCBLeaf: {
+      const auto *A = cast<EnforceTCBLeafAttr>(At);
+      return A->clone(C);
     }
     case attr::EnumExtensibility: {
       const auto *A = cast<EnumExtensibilityAttr>(At);
@@ -416,7 +496,9 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getSuccessValue(), TemplateArgs);
-        tempInstSuccessValue = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstSuccessValue = Result.get();
       }
       auto *tempInstArgs = new (C, 16) Expr *[A->args_size()];
       {
@@ -426,10 +508,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) ExclusiveTrylockFunctionAttr(A->getLocation(), C, tempInstSuccessValue, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) ExclusiveTrylockFunctionAttr(C, *A, tempInstSuccessValue, tempInstArgs, A->args_size());
     }
     case attr::ExternalSourceSymbol: {
       const auto *A = cast<ExternalSourceSymbolAttr>(At);
@@ -473,16 +557,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getArg(), TemplateArgs);
-        tempInstArg = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstArg = Result.get();
       }
-      return new (C) GuardedByAttr(A->getLocation(), C, tempInstArg, A->getSpellingListIndex());
+      return new (C) GuardedByAttr(C, *A, tempInstArg);
     }
     case attr::GuardedVar: {
       const auto *A = cast<GuardedVarAttr>(At);
-      return A->clone(C);
-    }
-    case attr::HIPPinnedShadow: {
-      const auto *A = cast<HIPPinnedShadowAttr>(At);
       return A->clone(C);
     }
     case attr::Hot: {
@@ -529,8 +611,20 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<LayoutVersionAttr>(At);
       return A->clone(C);
     }
+    case attr::Leaf: {
+      const auto *A = cast<LeafAttr>(At);
+      return A->clone(C);
+    }
     case attr::LifetimeBound: {
       const auto *A = cast<LifetimeBoundAttr>(At);
+      return A->clone(C);
+    }
+    case attr::Likely: {
+      const auto *A = cast<LikelyAttr>(At);
+      return A->clone(C);
+    }
+    case attr::LoaderUninitialized: {
+      const auto *A = cast<LoaderUninitializedAttr>(At);
       return A->clone(C);
     }
     case attr::LockReturned: {
@@ -539,9 +633,11 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getArg(), TemplateArgs);
-        tempInstArg = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstArg = Result.get();
       }
-      return new (C) LockReturnedAttr(A->getLocation(), C, tempInstArg, A->getSpellingListIndex());
+      return new (C) LockReturnedAttr(C, *A, tempInstArg);
     }
     case attr::LocksExcluded: {
       const auto *A = cast<LocksExcludedAttr>(At);
@@ -553,10 +649,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) LocksExcludedAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) LocksExcludedAttr(C, *A, tempInstArgs, A->args_size());
     }
     case attr::LoopHint: {
       const auto *A = cast<LoopHintAttr>(At);
@@ -642,6 +740,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<NSConsumesSelfAttr>(At);
       return A->clone(C);
     }
+    case attr::NSErrorDomain: {
+      const auto *A = cast<NSErrorDomainAttr>(At);
+      return A->clone(C);
+    }
     case attr::NSReturnsAutoreleased: {
       const auto *A = cast<NSReturnsAutoreleasedAttr>(At);
       return A->clone(C);
@@ -660,6 +762,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::NoAlias: {
       const auto *A = cast<NoAliasAttr>(At);
+      return A->clone(C);
+    }
+    case attr::NoBuiltin: {
+      const auto *A = cast<NoBuiltinAttr>(At);
       return A->clone(C);
     }
     case attr::NoCommon: {
@@ -692,6 +798,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::NoInstrumentFunction: {
       const auto *A = cast<NoInstrumentFunctionAttr>(At);
+      return A->clone(C);
+    }
+    case attr::NoMerge: {
+      const auto *A = cast<NoMergeAttr>(At);
       return A->clone(C);
     }
     case attr::NoMicroMips: {
@@ -762,6 +872,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<OMPDeclareTargetDeclAttr>(At);
       return A->clone(C);
     }
+    case attr::OMPDeclareVariant: {
+      const auto *A = cast<OMPDeclareVariantAttr>(At);
+      return A->clone(C);
+    }
     case attr::OMPReferencedVar: {
       const auto *A = cast<OMPReferencedVarAttr>(At);
       return A->clone(C);
@@ -818,6 +932,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<ObjCDesignatedInitializerAttr>(At);
       return A->clone(C);
     }
+    case attr::ObjCDirect: {
+      const auto *A = cast<ObjCDirectAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ObjCDirectMembers: {
+      const auto *A = cast<ObjCDirectMembersAttr>(At);
+      return A->clone(C);
+    }
     case attr::ObjCException: {
       const auto *A = cast<ObjCExceptionAttr>(At);
       return A->clone(C);
@@ -856,6 +978,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::ObjCNonLazyClass: {
       const auto *A = cast<ObjCNonLazyClassAttr>(At);
+      return A->clone(C);
+    }
+    case attr::ObjCNonRuntimeProtocol: {
+      const auto *A = cast<ObjCNonRuntimeProtocolAttr>(At);
       return A->clone(C);
     }
     case attr::ObjCOwnership: {
@@ -910,6 +1036,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<OpenCLGlobalAddressSpaceAttr>(At);
       return A->clone(C);
     }
+    case attr::OpenCLGlobalDeviceAddressSpace: {
+      const auto *A = cast<OpenCLGlobalDeviceAddressSpaceAttr>(At);
+      return A->clone(C);
+    }
+    case attr::OpenCLGlobalHostAddressSpace: {
+      const auto *A = cast<OpenCLGlobalHostAddressSpaceAttr>(At);
+      return A->clone(C);
+    }
     case attr::OpenCLIntelReqdSubGroupSize: {
       const auto *A = cast<OpenCLIntelReqdSubGroupSizeAttr>(At);
       return A->clone(C);
@@ -942,6 +1076,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<OverrideAttr>(At);
       return A->clone(C);
     }
+    case attr::Owner: {
+      const auto *A = cast<OwnerAttr>(At);
+      return A->clone(C);
+    }
     case attr::Ownership: {
       const auto *A = cast<OwnershipAttr>(At);
       return A->clone(C);
@@ -962,8 +1100,16 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<PassObjectSizeAttr>(At);
       return A->clone(C);
     }
+    case attr::PatchableFunctionEntry: {
+      const auto *A = cast<PatchableFunctionEntryAttr>(At);
+      return A->clone(C);
+    }
     case attr::Pcs: {
       const auto *A = cast<PcsAttr>(At);
+      return A->clone(C);
+    }
+    case attr::Pointer: {
+      const auto *A = cast<PointerAttr>(At);
       return A->clone(C);
     }
     case attr::PragmaClangBSSSection: {
@@ -974,6 +1120,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<PragmaClangDataSectionAttr>(At);
       return A->clone(C);
     }
+    case attr::PragmaClangRelroSection: {
+      const auto *A = cast<PragmaClangRelroSectionAttr>(At);
+      return A->clone(C);
+    }
     case attr::PragmaClangRodataSection: {
       const auto *A = cast<PragmaClangRodataSectionAttr>(At);
       return A->clone(C);
@@ -981,6 +1131,14 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     case attr::PragmaClangTextSection: {
       const auto *A = cast<PragmaClangTextSectionAttr>(At);
       return A->clone(C);
+    }
+    case attr::PreferredName: {
+      const auto *A = cast<PreferredNameAttr>(At);
+      TypeSourceInfo * tempInstTypedefType =
+        S.SubstType(A->getTypedefTypeLoc(), TemplateArgs, A->getLoc(), A->getAttrName());
+      if (!tempInstTypedefType)
+        return nullptr;
+      return new (C) PreferredNameAttr(C, *A, tempInstTypedefType);
     }
     case attr::PreserveAll: {
       const auto *A = cast<PreserveAllAttr>(At);
@@ -996,9 +1154,11 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getArg(), TemplateArgs);
-        tempInstArg = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstArg = Result.get();
       }
-      return new (C) PtGuardedByAttr(A->getLocation(), C, tempInstArg, A->getSpellingListIndex());
+      return new (C) PtGuardedByAttr(C, *A, tempInstArg);
     }
     case attr::PtGuardedVar: {
       const auto *A = cast<PtGuardedVarAttr>(At);
@@ -1038,10 +1198,16 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) ReleaseCapabilityAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) ReleaseCapabilityAttr(C, *A, tempInstArgs, A->args_size());
+    }
+    case attr::ReleaseHandle: {
+      const auto *A = cast<ReleaseHandleAttr>(At);
+      return A->clone(C);
     }
     case attr::RenderScriptKernel: {
       const auto *A = cast<RenderScriptKernelAttr>(At);
@@ -1049,10 +1215,6 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::ReqdWorkGroupSize: {
       const auto *A = cast<ReqdWorkGroupSizeAttr>(At);
-      return A->clone(C);
-    }
-    case attr::RequireConstantInit: {
-      const auto *A = cast<RequireConstantInitAttr>(At);
       return A->clone(C);
     }
     case attr::RequiresCapability: {
@@ -1065,10 +1227,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) RequiresCapabilityAttr(A->getLocation(), C, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) RequiresCapabilityAttr(C, *A, tempInstArgs, A->args_size());
     }
     case attr::Restrict: {
       const auto *A = cast<RestrictAttr>(At);
@@ -1088,6 +1252,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::SPtr: {
       const auto *A = cast<SPtrAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SYCLKernel: {
+      const auto *A = cast<SYCLKernelAttr>(At);
       return A->clone(C);
     }
     case attr::ScopedLockable: {
@@ -1116,7 +1284,9 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getSuccessValue(), TemplateArgs);
-        tempInstSuccessValue = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstSuccessValue = Result.get();
       }
       auto *tempInstArgs = new (C, 16) Expr *[A->args_size()];
       {
@@ -1126,10 +1296,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) SharedTrylockFunctionAttr(A->getLocation(), C, tempInstSuccessValue, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) SharedTrylockFunctionAttr(C, *A, tempInstSuccessValue, tempInstArgs, A->args_size());
     }
     case attr::SpeculativeLoadHardening: {
       const auto *A = cast<SpeculativeLoadHardeningAttr>(At);
@@ -1139,8 +1311,32 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<StdCallAttr>(At);
       return A->clone(C);
     }
+    case attr::StrictFP: {
+      const auto *A = cast<StrictFPAttr>(At);
+      return A->clone(C);
+    }
     case attr::Suppress: {
       const auto *A = cast<SuppressAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftAsync: {
+      const auto *A = cast<SwiftAsyncAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftAsyncName: {
+      const auto *A = cast<SwiftAsyncNameAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftAttr: {
+      const auto *A = cast<SwiftAttrAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftBridge: {
+      const auto *A = cast<SwiftBridgeAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftBridgedTypedef: {
+      const auto *A = cast<SwiftBridgedTypedefAttr>(At);
       return A->clone(C);
     }
     case attr::SwiftCall: {
@@ -1151,12 +1347,32 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<SwiftContextAttr>(At);
       return A->clone(C);
     }
+    case attr::SwiftError: {
+      const auto *A = cast<SwiftErrorAttr>(At);
+      return A->clone(C);
+    }
     case attr::SwiftErrorResult: {
       const auto *A = cast<SwiftErrorResultAttr>(At);
       return A->clone(C);
     }
     case attr::SwiftIndirectResult: {
       const auto *A = cast<SwiftIndirectResultAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftName: {
+      const auto *A = cast<SwiftNameAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftNewType: {
+      const auto *A = cast<SwiftNewTypeAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftObjCMembers: {
+      const auto *A = cast<SwiftObjCMembersAttr>(At);
+      return A->clone(C);
+    }
+    case attr::SwiftPrivate: {
+      const auto *A = cast<SwiftPrivateAttr>(At);
       return A->clone(C);
     }
     case attr::SysVABI: {
@@ -1197,7 +1413,9 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       {
         EnterExpressionEvaluationContext Unevaluated(S, Sema::ExpressionEvaluationContext::Unevaluated);
         ExprResult Result = S.SubstExpr(A->getSuccessValue(), TemplateArgs);
-        tempInstSuccessValue = Result.getAs<Expr>();
+        if (Result.isInvalid())
+          return nullptr;
+        tempInstSuccessValue = Result.get();
       }
       auto *tempInstArgs = new (C, 16) Expr *[A->args_size()];
       {
@@ -1207,10 +1425,12 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
         Expr * *E = A->args_end();
         for (; I != E; ++I, ++TI) {
           ExprResult Result = S.SubstExpr(*I, TemplateArgs);
-          *TI = Result.getAs<Expr>();
+          if (Result.isInvalid())
+            return nullptr;
+          *TI = Result.get();
         }
       }
-      return new (C) TryAcquireCapabilityAttr(A->getLocation(), C, tempInstSuccessValue, tempInstArgs, A->args_size(), A->getSpellingListIndex());
+      return new (C) TryAcquireCapabilityAttr(C, *A, tempInstSuccessValue, tempInstArgs, A->args_size());
     }
     case attr::TypeNonNull: {
       const auto *A = cast<TypeNonNullAttr>(At);
@@ -1222,6 +1442,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::TypeNullable: {
       const auto *A = cast<TypeNullableAttr>(At);
+      return A->clone(C);
+    }
+    case attr::TypeNullableResult: {
+      const auto *A = cast<TypeNullableResultAttr>(At);
       return A->clone(C);
     }
     case attr::TypeTagForDatatype: {
@@ -1243,8 +1467,16 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<UninitializedAttr>(At);
       return A->clone(C);
     }
+    case attr::Unlikely: {
+      const auto *A = cast<UnlikelyAttr>(At);
+      return A->clone(C);
+    }
     case attr::Unused: {
       const auto *A = cast<UnusedAttr>(At);
+      return A->clone(C);
+    }
+    case attr::UseHandle: {
+      const auto *A = cast<UseHandleAttr>(At);
       return A->clone(C);
     }
     case attr::Used: {
@@ -1288,6 +1520,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::WeakRef: {
       const auto *A = cast<WeakRefAttr>(At);
+      return A->clone(C);
+    }
+    case attr::WebAssemblyExportName: {
+      const auto *A = cast<WebAssemblyExportNameAttr>(At);
       return A->clone(C);
     }
     case attr::WebAssemblyImportModule: {
@@ -1354,6 +1590,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::AcquireCapability: {
       return nullptr;
     }
+    case attr::AcquireHandle: {
+      return nullptr;
+    }
     case attr::AcquiredAfter: {
       return nullptr;
     }
@@ -1367,6 +1606,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::AlignMac68k: {
+      return nullptr;
+    }
+    case attr::AlignNatural: {
       return nullptr;
     }
     case attr::AlignValue: {
@@ -1408,6 +1650,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::ArgumentWithTypeTag: {
       return nullptr;
     }
+    case attr::ArmBuiltinAlias: {
+      return nullptr;
+    }
+    case attr::ArmMveStrictPolymorphism: {
+      return nullptr;
+    }
     case attr::Artificial: {
       return nullptr;
     }
@@ -1426,7 +1674,13 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::AssumeAligned: {
       return nullptr;
     }
+    case attr::Assumption: {
+      return nullptr;
+    }
     case attr::Availability: {
+      return nullptr;
+    }
+    case attr::BPFPreserveAccessIndex: {
       return nullptr;
     }
     case attr::Blocks: {
@@ -1442,6 +1696,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::CFConsumed: {
+      return nullptr;
+    }
+    case attr::CFGuard: {
+      return nullptr;
+    }
+    case attr::CFICanonicalJumpTable: {
       return nullptr;
     }
     case attr::CFReturnsNotRetained: {
@@ -1464,6 +1724,14 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     }
     case attr::CUDADevice: {
       return nullptr;
+    }
+    case attr::CUDADeviceBuiltinSurfaceType: {
+      const auto *A = cast<CUDADeviceBuiltinSurfaceTypeAttr>(At);
+      return A->clone(C);
+    }
+    case attr::CUDADeviceBuiltinTextureType: {
+      const auto *A = cast<CUDADeviceBuiltinTextureTypeAttr>(At);
+      return A->clone(C);
     }
     case attr::CUDAGlobal: {
       return nullptr;
@@ -1489,6 +1757,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::Callback: {
       return nullptr;
     }
+    case attr::CalledOnce: {
+      return nullptr;
+    }
     case attr::Capability: {
       return nullptr;
     }
@@ -1501,6 +1772,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::Cleanup: {
       return nullptr;
     }
+    case attr::CmseNSCall: {
+      return nullptr;
+    }
+    case attr::CmseNSEntry: {
+      return nullptr;
+    }
     case attr::CodeSeg: {
       return nullptr;
     }
@@ -1511,6 +1788,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::Const: {
+      return nullptr;
+    }
+    case attr::ConstInit: {
       return nullptr;
     }
     case attr::Constructor: {
@@ -1559,6 +1839,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::EnableIf: {
       return nullptr;
     }
+    case attr::EnforceTCB: {
+      return nullptr;
+    }
+    case attr::EnforceTCBLeaf: {
+      return nullptr;
+    }
     case attr::EnumExtensibility: {
       return nullptr;
     }
@@ -1602,9 +1888,6 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::GuardedVar: {
       return nullptr;
     }
-    case attr::HIPPinnedShadow: {
-      return nullptr;
-    }
     case attr::Hot: {
       return nullptr;
     }
@@ -1638,7 +1921,16 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::LayoutVersion: {
       return nullptr;
     }
+    case attr::Leaf: {
+      return nullptr;
+    }
     case attr::LifetimeBound: {
+      return nullptr;
+    }
+    case attr::Likely: {
+      return nullptr;
+    }
+    case attr::LoaderUninitialized: {
       return nullptr;
     }
     case attr::LockReturned: {
@@ -1710,6 +2002,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::NSConsumesSelf: {
       return nullptr;
     }
+    case attr::NSErrorDomain: {
+      return nullptr;
+    }
     case attr::NSReturnsAutoreleased: {
       return nullptr;
     }
@@ -1723,6 +2018,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::NoAlias: {
+      return nullptr;
+    }
+    case attr::NoBuiltin: {
       return nullptr;
     }
     case attr::NoCommon: {
@@ -1747,6 +2045,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::NoInstrumentFunction: {
+      return nullptr;
+    }
+    case attr::NoMerge: {
       return nullptr;
     }
     case attr::NoMicroMips: {
@@ -1800,6 +2101,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::OMPDeclareTargetDecl: {
       return nullptr;
     }
+    case attr::OMPDeclareVariant: {
+      return nullptr;
+    }
     case attr::OMPReferencedVar: {
       return nullptr;
     }
@@ -1842,6 +2146,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::ObjCDesignatedInitializer: {
       return nullptr;
     }
+    case attr::ObjCDirect: {
+      return nullptr;
+    }
+    case attr::ObjCDirectMembers: {
+      return nullptr;
+    }
     case attr::ObjCException: {
       return nullptr;
     }
@@ -1870,6 +2180,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::ObjCNonLazyClass: {
+      return nullptr;
+    }
+    case attr::ObjCNonRuntimeProtocol: {
       return nullptr;
     }
     case attr::ObjCOwnership: {
@@ -1911,6 +2224,12 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::OpenCLGlobalAddressSpace: {
       return nullptr;
     }
+    case attr::OpenCLGlobalDeviceAddressSpace: {
+      return nullptr;
+    }
+    case attr::OpenCLGlobalHostAddressSpace: {
+      return nullptr;
+    }
     case attr::OpenCLIntelReqdSubGroupSize: {
       return nullptr;
     }
@@ -1935,6 +2254,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::Override: {
       return nullptr;
     }
+    case attr::Owner: {
+      return nullptr;
+    }
     case attr::Ownership: {
       return nullptr;
     }
@@ -1950,7 +2272,13 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::PassObjectSize: {
       return nullptr;
     }
+    case attr::PatchableFunctionEntry: {
+      return nullptr;
+    }
     case attr::Pcs: {
+      return nullptr;
+    }
+    case attr::Pointer: {
       return nullptr;
     }
     case attr::PragmaClangBSSSection: {
@@ -1959,11 +2287,22 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::PragmaClangDataSection: {
       return nullptr;
     }
+    case attr::PragmaClangRelroSection: {
+      return nullptr;
+    }
     case attr::PragmaClangRodataSection: {
       return nullptr;
     }
     case attr::PragmaClangTextSection: {
       return nullptr;
+    }
+    case attr::PreferredName: {
+      const auto *A = cast<PreferredNameAttr>(At);
+      TypeSourceInfo * tempInstTypedefType =
+        S.SubstType(A->getTypedefTypeLoc(), TemplateArgs, A->getLoc(), A->getAttrName());
+      if (!tempInstTypedefType)
+        return nullptr;
+      return new (C) PreferredNameAttr(C, *A, tempInstTypedefType);
     }
     case attr::PreserveAll: {
       return nullptr;
@@ -1998,13 +2337,13 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::ReleaseCapability: {
       return nullptr;
     }
+    case attr::ReleaseHandle: {
+      return nullptr;
+    }
     case attr::RenderScriptKernel: {
       return nullptr;
     }
     case attr::ReqdWorkGroupSize: {
-      return nullptr;
-    }
-    case attr::RequireConstantInit: {
       return nullptr;
     }
     case attr::RequiresCapability: {
@@ -2023,6 +2362,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::SPtr: {
+      return nullptr;
+    }
+    case attr::SYCLKernel: {
       return nullptr;
     }
     case attr::ScopedLockable: {
@@ -2049,7 +2391,25 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::StdCall: {
       return nullptr;
     }
+    case attr::StrictFP: {
+      return nullptr;
+    }
     case attr::Suppress: {
+      return nullptr;
+    }
+    case attr::SwiftAsync: {
+      return nullptr;
+    }
+    case attr::SwiftAsyncName: {
+      return nullptr;
+    }
+    case attr::SwiftAttr: {
+      return nullptr;
+    }
+    case attr::SwiftBridge: {
+      return nullptr;
+    }
+    case attr::SwiftBridgedTypedef: {
       return nullptr;
     }
     case attr::SwiftCall: {
@@ -2058,10 +2418,25 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::SwiftContext: {
       return nullptr;
     }
+    case attr::SwiftError: {
+      return nullptr;
+    }
     case attr::SwiftErrorResult: {
       return nullptr;
     }
     case attr::SwiftIndirectResult: {
+      return nullptr;
+    }
+    case attr::SwiftName: {
+      return nullptr;
+    }
+    case attr::SwiftNewType: {
+      return nullptr;
+    }
+    case attr::SwiftObjCMembers: {
+      return nullptr;
+    }
+    case attr::SwiftPrivate: {
       return nullptr;
     }
     case attr::SysVABI: {
@@ -2100,6 +2475,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::TypeNullable: {
       return nullptr;
     }
+    case attr::TypeNullableResult: {
+      return nullptr;
+    }
     case attr::TypeTagForDatatype: {
       return nullptr;
     }
@@ -2115,7 +2493,13 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::Uninitialized: {
       return nullptr;
     }
+    case attr::Unlikely: {
+      return nullptr;
+    }
     case attr::Unused: {
+      return nullptr;
+    }
+    case attr::UseHandle: {
       return nullptr;
     }
     case attr::Used: {
@@ -2149,6 +2533,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::WeakRef: {
+      return nullptr;
+    }
+    case attr::WebAssemblyExportName: {
       return nullptr;
     }
     case attr::WebAssemblyImportModule: {

@@ -46,6 +46,10 @@
     const auto *SA = cast<AcquireCapabilityAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
   }
+  void VisitAcquireHandleAttr(const AcquireHandleAttr *A) {
+    const auto *SA = cast<AcquireHandleAttr>(A); (void)SA;
+    OS << " \"" << SA->getHandleType() << "\"";
+  }
   void VisitAddressSpaceAttr(const AddressSpaceAttr *A) {
     const auto *SA = cast<AddressSpaceAttr>(A); (void)SA;
     OS << " " << SA->getAddressSpace();
@@ -86,13 +90,23 @@
     OS << " " << SA->getTypeTagIdx().getSourceIndex();
     if (SA->getIsPointer()) OS << " IsPointer";
   }
+  void VisitArmBuiltinAliasAttr(const ArmBuiltinAliasAttr *A) {
+    const auto *SA = cast<ArmBuiltinAliasAttr>(A); (void)SA;
+    if (SA->getBuiltinName())
+      OS << " " << SA->getBuiltinName()->getName();
+  }
   void VisitAsmLabelAttr(const AsmLabelAttr *A) {
     const auto *SA = cast<AsmLabelAttr>(A); (void)SA;
     OS << " \"" << SA->getLabel() << "\"";
+    if (SA->getIsLiteralLabel()) OS << " IsLiteralLabel";
   }
   void VisitAssertCapabilityAttr(const AssertCapabilityAttr *A) {
     const auto *SA = cast<AssertCapabilityAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
+  }
+  void VisitAssumptionAttr(const AssumptionAttr *A) {
+    const auto *SA = cast<AssumptionAttr>(A); (void)SA;
+    OS << " \"" << SA->getAssumption() << "\"";
   }
   void VisitAvailabilityAttr(const AvailabilityAttr *A) {
     const auto *SA = cast<AvailabilityAttr>(A); (void)SA;
@@ -112,6 +126,14 @@
     switch(SA->getType()) {
     case BlocksAttr::ByRef:
       OS << " ByRef";
+      break;
+    }
+  }
+  void VisitCFGuardAttr(const CFGuardAttr *A) {
+    const auto *SA = cast<CFGuardAttr>(A); (void)SA;
+    switch(SA->getGuard()) {
+    case CFGuardAttr::nocf:
+      OS << " nocf";
       break;
     }
   }
@@ -160,6 +182,9 @@
     const auto *SA = cast<CodeSegAttr>(A); (void)SA;
     OS << " \"" << SA->getName() << "\"";
   }
+  void VisitConstInitAttr(const ConstInitAttr *A) {
+    OS << " " << A->getSpelling();
+  }
   void VisitConstructorAttr(const ConstructorAttr *A) {
     const auto *SA = cast<ConstructorAttr>(A); (void)SA;
     OS << " " << SA->getPriority();
@@ -206,6 +231,14 @@
     const auto *SA = cast<EnableIfAttr>(A); (void)SA;
     OS << " \"" << SA->getMessage() << "\"";
   }
+  void VisitEnforceTCBAttr(const EnforceTCBAttr *A) {
+    const auto *SA = cast<EnforceTCBAttr>(A); (void)SA;
+    OS << " \"" << SA->getTCBName() << "\"";
+  }
+  void VisitEnforceTCBLeafAttr(const EnforceTCBLeafAttr *A) {
+    const auto *SA = cast<EnforceTCBLeafAttr>(A); (void)SA;
+    OS << " \"" << SA->getTCBName() << "\"";
+  }
   void VisitEnumExtensibilityAttr(const EnumExtensibilityAttr *A) {
     const auto *SA = cast<EnumExtensibilityAttr>(A); (void)SA;
     switch(SA->getExtensibility()) {
@@ -239,7 +272,7 @@
   }
   void VisitIBOutletCollectionAttr(const IBOutletCollectionAttr *A) {
     const auto *SA = cast<IBOutletCollectionAttr>(A); (void)SA;
-    OS << " " << SA->getInterface().getAsString();
+    if (SA->getInterfaceLoc())    OS << " " << SA->getInterface().getAsString();
   }
   void VisitIFuncAttr(const IFuncAttr *A) {
     const auto *SA = cast<IFuncAttr>(A); (void)SA;
@@ -294,6 +327,9 @@
     case LoopHintAttr::Distribute:
       OS << " Distribute";
       break;
+    case LoopHintAttr::VectorizePredicate:
+      OS << " VectorizePredicate";
+      break;
     }
     switch(SA->getState()) {
     case LoopHintAttr::Enable:
@@ -304,6 +340,12 @@
       break;
     case LoopHintAttr::Numeric:
       OS << " Numeric";
+      break;
+    case LoopHintAttr::FixedWidth:
+      OS << " FixedWidth";
+      break;
+    case LoopHintAttr::ScalableWidth:
+      OS << " ScalableWidth";
       break;
     case LoopHintAttr::AssumeSafety:
       OS << " AssumeSafety";
@@ -377,6 +419,16 @@
     if (SA->getMode())
       OS << " " << SA->getMode()->getName();
   }
+  void VisitNSErrorDomainAttr(const NSErrorDomainAttr *A) {
+    const auto *SA = cast<NSErrorDomainAttr>(A); (void)SA;
+    OS << " ";
+    dumpBareDeclRef(SA->getErrorDomain());
+  }
+  void VisitNoBuiltinAttr(const NoBuiltinAttr *A) {
+    const auto *SA = cast<NoBuiltinAttr>(A); (void)SA;
+    for (const auto &Val : SA->builtinNames())
+      OS << " " << Val;
+  }
   void VisitNoSanitizeAttr(const NoSanitizeAttr *A) {
     const auto *SA = cast<NoSanitizeAttr>(A); (void)SA;
     for (const auto &Val : SA->sanitizers())
@@ -390,6 +442,9 @@
   void VisitOMPAllocateDeclAttr(const OMPAllocateDeclAttr *A) {
     const auto *SA = cast<OMPAllocateDeclAttr>(A); (void)SA;
     switch(SA->getAllocatorType()) {
+    case OMPAllocateDeclAttr::OMPNullMemAlloc:
+      OS << " OMPNullMemAlloc";
+      break;
     case OMPAllocateDeclAttr::OMPDefaultMemAlloc:
       OS << " OMPDefaultMemAlloc";
       break;
@@ -421,7 +476,7 @@
   }
   void VisitOMPCaptureKindAttr(const OMPCaptureKindAttr *A) {
     const auto *SA = cast<OMPCaptureKindAttr>(A); (void)SA;
-    OS << " " << SA->getCaptureKind();
+    OS << " " << SA->getCaptureKindVal();
   }
   void VisitOMPDeclareSimdDeclAttr(const OMPDeclareSimdDeclAttr *A) {
     const auto *SA = cast<OMPDeclareSimdDeclAttr>(A); (void)SA;
@@ -449,6 +504,22 @@
       OS << " MT_Link";
       break;
     }
+    switch(SA->getDevType()) {
+    case OMPDeclareTargetDeclAttr::DT_Host:
+      OS << " DT_Host";
+      break;
+    case OMPDeclareTargetDeclAttr::DT_NoHost:
+      OS << " DT_NoHost";
+      break;
+    case OMPDeclareTargetDeclAttr::DT_Any:
+      OS << " DT_Any";
+      break;
+    }
+    OS << " " << SA->getLevel();
+  }
+  void VisitOMPDeclareVariantAttr(const OMPDeclareVariantAttr *A) {
+    const auto *SA = cast<OMPDeclareVariantAttr>(A); (void)SA;
+    OS << " " << SA->getTraitInfos();
   }
   void VisitObjCBridgeAttr(const ObjCBridgeAttr *A) {
     const auto *SA = cast<ObjCBridgeAttr>(A); (void)SA;
@@ -509,13 +580,32 @@
   void VisitOpenCLAccessAttr(const OpenCLAccessAttr *A) {
     OS << " " << A->getSpelling();
   }
+  void VisitOpenCLConstantAddressSpaceAttr(const OpenCLConstantAddressSpaceAttr *A) {
+    OS << " " << A->getSpelling();
+  }
+  void VisitOpenCLGenericAddressSpaceAttr(const OpenCLGenericAddressSpaceAttr *A) {
+    OS << " " << A->getSpelling();
+  }
+  void VisitOpenCLGlobalAddressSpaceAttr(const OpenCLGlobalAddressSpaceAttr *A) {
+    OS << " " << A->getSpelling();
+  }
   void VisitOpenCLIntelReqdSubGroupSizeAttr(const OpenCLIntelReqdSubGroupSizeAttr *A) {
     const auto *SA = cast<OpenCLIntelReqdSubGroupSizeAttr>(A); (void)SA;
     OS << " " << SA->getSubGroupSize();
   }
+  void VisitOpenCLLocalAddressSpaceAttr(const OpenCLLocalAddressSpaceAttr *A) {
+    OS << " " << A->getSpelling();
+  }
+  void VisitOpenCLPrivateAddressSpaceAttr(const OpenCLPrivateAddressSpaceAttr *A) {
+    OS << " " << A->getSpelling();
+  }
   void VisitOpenCLUnrollHintAttr(const OpenCLUnrollHintAttr *A) {
     const auto *SA = cast<OpenCLUnrollHintAttr>(A); (void)SA;
     OS << " " << SA->getUnrollHint();
+  }
+  void VisitOwnerAttr(const OwnerAttr *A) {
+    const auto *SA = cast<OwnerAttr>(A); (void)SA;
+    if (SA->getDerefTypeLoc())    OS << " " << SA->getDerefType().getAsString();
   }
   void VisitOwnershipAttr(const OwnershipAttr *A) {
     const auto *SA = cast<OwnershipAttr>(A); (void)SA;
@@ -544,6 +634,11 @@
     OS << " " << A->getSpelling();
     OS << " " << SA->getType();
   }
+  void VisitPatchableFunctionEntryAttr(const PatchableFunctionEntryAttr *A) {
+    const auto *SA = cast<PatchableFunctionEntryAttr>(A); (void)SA;
+    OS << " " << SA->getCount();
+    OS << " " << SA->getOffset();
+  }
   void VisitPcsAttr(const PcsAttr *A) {
     const auto *SA = cast<PcsAttr>(A); (void)SA;
     switch(SA->getPCS()) {
@@ -555,12 +650,20 @@
       break;
     }
   }
+  void VisitPointerAttr(const PointerAttr *A) {
+    const auto *SA = cast<PointerAttr>(A); (void)SA;
+    if (SA->getDerefTypeLoc())    OS << " " << SA->getDerefType().getAsString();
+  }
   void VisitPragmaClangBSSSectionAttr(const PragmaClangBSSSectionAttr *A) {
     const auto *SA = cast<PragmaClangBSSSectionAttr>(A); (void)SA;
     OS << " \"" << SA->getName() << "\"";
   }
   void VisitPragmaClangDataSectionAttr(const PragmaClangDataSectionAttr *A) {
     const auto *SA = cast<PragmaClangDataSectionAttr>(A); (void)SA;
+    OS << " \"" << SA->getName() << "\"";
+  }
+  void VisitPragmaClangRelroSectionAttr(const PragmaClangRelroSectionAttr *A) {
+    const auto *SA = cast<PragmaClangRelroSectionAttr>(A); (void)SA;
     OS << " \"" << SA->getName() << "\"";
   }
   void VisitPragmaClangRodataSectionAttr(const PragmaClangRodataSectionAttr *A) {
@@ -570,6 +673,10 @@
   void VisitPragmaClangTextSectionAttr(const PragmaClangTextSectionAttr *A) {
     const auto *SA = cast<PragmaClangTextSectionAttr>(A); (void)SA;
     OS << " \"" << SA->getName() << "\"";
+  }
+  void VisitPreferredNameAttr(const PreferredNameAttr *A) {
+    const auto *SA = cast<PreferredNameAttr>(A); (void)SA;
+    OS << " " << SA->getTypedefType().getAsString();
   }
   void VisitRISCVInterruptAttr(const RISCVInterruptAttr *A) {
     const auto *SA = cast<RISCVInterruptAttr>(A); (void)SA;
@@ -588,6 +695,10 @@
   void VisitReleaseCapabilityAttr(const ReleaseCapabilityAttr *A) {
     const auto *SA = cast<ReleaseCapabilityAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
+  }
+  void VisitReleaseHandleAttr(const ReleaseHandleAttr *A) {
+    const auto *SA = cast<ReleaseHandleAttr>(A); (void)SA;
+    OS << " \"" << SA->getHandleType() << "\"";
   }
   void VisitReqdWorkGroupSizeAttr(const ReqdWorkGroupSizeAttr *A) {
     const auto *SA = cast<ReqdWorkGroupSizeAttr>(A); (void)SA;
@@ -644,6 +755,70 @@
     const auto *SA = cast<SuppressAttr>(A); (void)SA;
     for (const auto &Val : SA->diagnosticIdentifiers())
       OS << " " << Val;
+  }
+  void VisitSwiftAsyncAttr(const SwiftAsyncAttr *A) {
+    const auto *SA = cast<SwiftAsyncAttr>(A); (void)SA;
+    switch(SA->getKind()) {
+    case SwiftAsyncAttr::None:
+      OS << " None";
+      break;
+    case SwiftAsyncAttr::SwiftPrivate:
+      OS << " SwiftPrivate";
+      break;
+    case SwiftAsyncAttr::NotSwiftPrivate:
+      OS << " NotSwiftPrivate";
+      break;
+    }
+    if (SA->getCompletionHandlerIndex().isValid())
+      OS << " " << SA->getCompletionHandlerIndex().getSourceIndex();
+  }
+  void VisitSwiftAsyncNameAttr(const SwiftAsyncNameAttr *A) {
+    const auto *SA = cast<SwiftAsyncNameAttr>(A); (void)SA;
+    OS << " \"" << SA->getName() << "\"";
+  }
+  void VisitSwiftAttrAttr(const SwiftAttrAttr *A) {
+    const auto *SA = cast<SwiftAttrAttr>(A); (void)SA;
+    OS << " \"" << SA->getAttribute() << "\"";
+  }
+  void VisitSwiftBridgeAttr(const SwiftBridgeAttr *A) {
+    const auto *SA = cast<SwiftBridgeAttr>(A); (void)SA;
+    OS << " \"" << SA->getSwiftType() << "\"";
+  }
+  void VisitSwiftErrorAttr(const SwiftErrorAttr *A) {
+    const auto *SA = cast<SwiftErrorAttr>(A); (void)SA;
+    switch(SA->getConvention()) {
+    case SwiftErrorAttr::None:
+      OS << " None";
+      break;
+    case SwiftErrorAttr::NonNullError:
+      OS << " NonNullError";
+      break;
+    case SwiftErrorAttr::NullResult:
+      OS << " NullResult";
+      break;
+    case SwiftErrorAttr::ZeroResult:
+      OS << " ZeroResult";
+      break;
+    case SwiftErrorAttr::NonZeroResult:
+      OS << " NonZeroResult";
+      break;
+    }
+  }
+  void VisitSwiftNameAttr(const SwiftNameAttr *A) {
+    const auto *SA = cast<SwiftNameAttr>(A); (void)SA;
+    OS << " \"" << SA->getName() << "\"";
+  }
+  void VisitSwiftNewTypeAttr(const SwiftNewTypeAttr *A) {
+    const auto *SA = cast<SwiftNewTypeAttr>(A); (void)SA;
+    OS << " " << A->getSpelling();
+    switch(SA->getNewtypeKind()) {
+    case SwiftNewTypeAttr::NK_Struct:
+      OS << " NK_Struct";
+      break;
+    case SwiftNewTypeAttr::NK_Enum:
+      OS << " NK_Enum";
+      break;
+    }
   }
   void VisitTLSModelAttr(const TLSModelAttr *A) {
     const auto *SA = cast<TLSModelAttr>(A); (void)SA;
@@ -717,9 +892,15 @@
   void VisitUnusedAttr(const UnusedAttr *A) {
     OS << " " << A->getSpelling();
   }
+  void VisitUseHandleAttr(const UseHandleAttr *A) {
+    const auto *SA = cast<UseHandleAttr>(A); (void)SA;
+    OS << " \"" << SA->getHandleType() << "\"";
+  }
   void VisitUuidAttr(const UuidAttr *A) {
     const auto *SA = cast<UuidAttr>(A); (void)SA;
     OS << " \"" << SA->getGuid() << "\"";
+    OS << " ";
+    dumpBareDeclRef(SA->getGuidDecl());
   }
   void VisitVecTypeHintAttr(const VecTypeHintAttr *A) {
     const auto *SA = cast<VecTypeHintAttr>(A); (void)SA;
@@ -740,11 +921,17 @@
     }
   }
   void VisitWarnUnusedResultAttr(const WarnUnusedResultAttr *A) {
+    const auto *SA = cast<WarnUnusedResultAttr>(A); (void)SA;
     OS << " " << A->getSpelling();
+    OS << " \"" << SA->getMessage() << "\"";
   }
   void VisitWeakRefAttr(const WeakRefAttr *A) {
     const auto *SA = cast<WeakRefAttr>(A); (void)SA;
     OS << " \"" << SA->getAliasee() << "\"";
+  }
+  void VisitWebAssemblyExportNameAttr(const WebAssemblyExportNameAttr *A) {
+    const auto *SA = cast<WebAssemblyExportNameAttr>(A); (void)SA;
+    OS << " \"" << SA->getExportName() << "\"";
   }
   void VisitWebAssemblyImportModuleAttr(const WebAssemblyImportModuleAttr *A) {
     const auto *SA = cast<WebAssemblyImportModuleAttr>(A); (void)SA;

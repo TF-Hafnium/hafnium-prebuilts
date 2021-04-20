@@ -9,7 +9,6 @@
   __interceptor___cxa_rethrow_primary_exception;
   __interceptor___cxa_throw;
   __interceptor___libc_memalign;
-  __interceptor___strndup;
   __interceptor___strxfrm_l;
   __interceptor___wait4;
   __interceptor___wcsxfrm_l;
@@ -26,7 +25,7 @@
   __interceptor_bcmp;
   __interceptor_bsd_signal;
   __interceptor_calloc;
-  __interceptor_cfree;
+  __interceptor_clock_getcpuclockid;
   __interceptor_clock_getres;
   __interceptor_clock_gettime;
   __interceptor_clock_settime;
@@ -69,6 +68,9 @@
   __interceptor_getmntent;
   __interceptor_getnameinfo;
   __interceptor_getpeername;
+  __interceptor_getprotobyname;
+  __interceptor_getprotobynumber;
+  __interceptor_getprotoent;
   __interceptor_getpwnam;
   __interceptor_getpwuid;
   __interceptor_getresgid;
@@ -153,6 +155,8 @@
   __interceptor_pthread_setcancelstate;
   __interceptor_pthread_setcanceltype;
   __interceptor_pthread_sigmask;
+  __interceptor_ptsname;
+  __interceptor_ptsname_r;
   __interceptor_puts;
   __interceptor_pvalloc;
   __interceptor_pwrite;
@@ -195,6 +199,7 @@
   __interceptor_setlocale;
   __interceptor_setvbuf;
   __interceptor_sigaction;
+  __interceptor_sigaltstack;
   __interceptor_siglongjmp;
   __interceptor_signal;
   __interceptor_sigpending;
@@ -246,6 +251,7 @@
   __interceptor_tmpnam;
   __interceptor_ttyname;
   __interceptor_ttyname_r;
+  __interceptor_uname;
   __interceptor_valloc;
   __interceptor_vasprintf;
   __interceptor_vfork;
@@ -278,6 +284,7 @@
   __sanitizer_annotate_contiguous_container;
   __sanitizer_contiguous_container_find_bad_address;
   __sanitizer_cov_8bit_counters_init;
+  __sanitizer_cov_bool_flag_init;
   __sanitizer_cov_dump;
   __sanitizer_cov_pcs_init;
   __sanitizer_cov_reset;
@@ -307,8 +314,10 @@
   __sanitizer_get_heap_size;
   __sanitizer_get_module_and_offset_for_pc;
   __sanitizer_get_ownership;
+  __sanitizer_get_report_path;
   __sanitizer_get_unmapped_bytes;
   __sanitizer_install_malloc_and_free_hooks;
+  __sanitizer_on_print;
   __sanitizer_print_memory_profile;
   __sanitizer_print_stack_trace;
   __sanitizer_ptr_cmp;
@@ -396,6 +405,7 @@
   __sanitizer_syscall_post_impl_getpid;
   __sanitizer_syscall_post_impl_getppid;
   __sanitizer_syscall_post_impl_getpriority;
+  __sanitizer_syscall_post_impl_getrandom;
   __sanitizer_syscall_post_impl_getresgid;
   __sanitizer_syscall_post_impl_getresuid;
   __sanitizer_syscall_post_impl_getrlimit;
@@ -571,6 +581,7 @@
   __sanitizer_syscall_post_impl_shmget;
   __sanitizer_syscall_post_impl_shutdown;
   __sanitizer_syscall_post_impl_sigaction;
+  __sanitizer_syscall_post_impl_sigaltstack;
   __sanitizer_syscall_post_impl_signal;
   __sanitizer_syscall_post_impl_signalfd;
   __sanitizer_syscall_post_impl_signalfd4;
@@ -702,6 +713,7 @@
   __sanitizer_syscall_pre_impl_getpid;
   __sanitizer_syscall_pre_impl_getppid;
   __sanitizer_syscall_pre_impl_getpriority;
+  __sanitizer_syscall_pre_impl_getrandom;
   __sanitizer_syscall_pre_impl_getresgid;
   __sanitizer_syscall_pre_impl_getresuid;
   __sanitizer_syscall_pre_impl_getrlimit;
@@ -877,6 +889,7 @@
   __sanitizer_syscall_pre_impl_shmget;
   __sanitizer_syscall_pre_impl_shutdown;
   __sanitizer_syscall_pre_impl_sigaction;
+  __sanitizer_syscall_pre_impl_sigaltstack;
   __sanitizer_syscall_pre_impl_signal;
   __sanitizer_syscall_pre_impl_signalfd;
   __sanitizer_syscall_pre_impl_signalfd4;
@@ -949,7 +962,6 @@
   __sanitizer_weak_hook_strncasecmp;
   __sanitizer_weak_hook_strncmp;
   __sanitizer_weak_hook_strstr;
-  __strndup;
   __strxfrm_l;
   __ubsan_*;
   __wait4;
@@ -967,7 +979,7 @@
   bcmp;
   bsd_signal;
   calloc;
-  cfree;
+  clock_getcpuclockid;
   clock_getres;
   clock_gettime;
   clock_settime;
@@ -1010,6 +1022,9 @@
   getmntent;
   getnameinfo;
   getpeername;
+  getprotobyname;
+  getprotobynumber;
+  getprotoent;
   getpwnam;
   getpwuid;
   getresgid;
@@ -1093,6 +1108,8 @@
   pthread_setcancelstate;
   pthread_setcanceltype;
   pthread_sigmask;
+  ptsname;
+  ptsname_r;
   puts;
   pvalloc;
   pwrite;
@@ -1134,6 +1151,7 @@
   setlocale;
   setvbuf;
   sigaction;
+  sigaltstack;
   siglongjmp;
   signal;
   sigpending;
@@ -1185,6 +1203,7 @@
   tmpnam;
   ttyname;
   ttyname_r;
+  uname;
   valloc;
   vasprintf;
   vfork;

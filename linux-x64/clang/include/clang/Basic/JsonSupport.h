@@ -10,9 +10,10 @@
 #define LLVM_CLANG_BASIC_JSONSUPPORT_H
 
 #include "clang/Basic/LLVM.h"
+#include "clang/Basic/SourceManager.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/raw_ostream.h"
-
+#include <iterator>
 
 namespace clang {
 
@@ -77,6 +78,55 @@ inline std::string JsonFormat(StringRef RawSR, bool AddQuotes) {
   return '\"' + Str + '\"';
 }
 
+inline void printSourceLocationAsJson(raw_ostream &Out, SourceLocation Loc,
+                                      const SourceManager &SM,
+                                      bool AddBraces = true) {
+  // Mostly copy-pasted from SourceLocation::print.
+  if (!Loc.isValid()) {
+    Out << "null";
+    return;
+  }
+
+  if (Loc.isFileID()) {
+    PresumedLoc PLoc = SM.getPresumedLoc(Loc);
+
+    if (PLoc.isInvalid()) {
+      Out << "null";
+      return;
+    }
+    // The macro expansion and spelling pos is identical for file locs.
+    if (AddBraces)
+      Out << "{ ";
+    std::string filename(PLoc.getFilename());
+#ifdef _WIN32
+    // Remove forbidden Windows path characters
+    auto RemoveIt =
+        std::remove_if(filename.begin(), filename.end(), [](auto Char) {
+          static const char ForbiddenChars[] = "<>*?\"|";
+          return std::find(std::begin(ForbiddenChars), std::end(ForbiddenChars),
+                           Char) != std::end(ForbiddenChars);
+        });
+    filename.erase(RemoveIt, filename.end());
+    // Handle windows-specific path delimiters.
+    std::replace(filename.begin(), filename.end(), '\\', '/');
+#endif
+    Out << "\"line\": " << PLoc.getLine()
+        << ", \"column\": " << PLoc.getColumn()
+        << ", \"file\": \"" << filename << "\"";
+    if (AddBraces)
+      Out << " }";
+    return;
+  }
+
+  // We want 'location: { ..., spelling: { ... }}' but not
+  // 'location: { ... }, spelling: { ... }', hence the dance
+  // with braces.
+  Out << "{ ";
+  printSourceLocationAsJson(Out, SM.getExpansionLoc(Loc), SM, false);
+  Out << ", \"spelling\": ";
+  printSourceLocationAsJson(Out, SM.getSpellingLoc(Loc), SM, true);
+  Out << " }";
+}
 } // namespace clang
 
 #endif // LLVM_CLANG_BASIC_JSONSUPPORT_H
