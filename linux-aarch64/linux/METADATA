@@ -4,9 +4,9 @@ description: "Prebuilt Linux kernel image, for running integration tests."
 third_party {
   url {
     type: ARCHIVE
-    value: "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.4.2.tar.xz"
+    value: "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.109.tar.xz"
   }
-  version: "5.4.2"
-  last_upgrade_date { year: 2019 month: 12 day: 10 }
+  version: "5.10.109"
+  last_upgrade_date { year: 2022 month: 04 day: 04 }
   license_type: RESTRICTED
 }
