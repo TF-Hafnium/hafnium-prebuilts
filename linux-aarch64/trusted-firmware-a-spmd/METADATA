@@ -4,13 +4,13 @@ description: "Trusted Firmware-A (TF-A) provides a reference implementation of s
 third_party {
   url {
     type: HOMEPAGE
-    value: "https://www.trustedfirmware.org/"
+    value: "https://www.trustedfirmware.org/projects/tf-a"
   }
   url {
     type: GIT
     value: "https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git"
   }
-  version: "2.6"
-  last_upgrade_date { year: 2022 month: 04 day: 20 }
+  version: "2.8"
+  last_upgrade_date { year: 2023 month: 01 day: 17 }
   license_type: NOTICE
 }
