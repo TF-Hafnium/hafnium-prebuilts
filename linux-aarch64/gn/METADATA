@@ -1,0 +1,12 @@
+name: "GN"
+description: "GN is a meta-build system that generates NinjaBuild files."
+
+third_party {
+  url {
+    type: GIT
+    value: "https://gn.googlesource.com/gn"
+  }
+  version: "1901"
+  last_upgrade_date { year: 2021 month: 12 day: 16 }
+  license_type: NOTICE
+}
