@@ -6,7 +6,7 @@ third_party {
     type: GIT
     value: "https://gn.googlesource.com/gn"
   }
-  version: "1452"
-  last_upgrade_date { year: 2018 month: 8 day: 3 }
+  version: "1901"
+  last_upgrade_date { year: 2022 month: 2 day: 2 }
   license_type: NOTICE
 }
